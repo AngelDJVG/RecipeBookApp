@@ -1,0 +1,240 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:padding="1dp"
+            android:paddingStart="15dp"
+            android:text="&lt;"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:text="Detalles"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/header"
+        android:background="@android:color/black" />
+
+    <ScrollView
+        android:id="@+id/scrollbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        android:layout_marginBottom="67dp"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/imagen_receta"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:paddingTop="10px"
+                android:scaleType="fitXY"
+                android:src="@drawable/imagen_receta" />
+
+            <TextView
+                android:id="@+id/nombre_receta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Receta 1"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/edittext_bg_rounded"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tiempo_preparacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Preparación: 20 min"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tiempo_cocinado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Cocinado: 45 min"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tiempo_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Total: 45 min"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/edittext_bg_rounded"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/titulo_ingredientes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Ingredientes"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lista_ingredientes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="xxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxx"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_bg_rounded"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/titulo_preparacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Preparación"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/pasos_preparacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Xxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxx
+                    \nxxxxxxxxxx xxxxxxxxxxxx xxxx xxxxxx xxxxxxxx
+                    \nxx xxxxx xx xxxxxxx xxxxxxxxxxx xxxxxxxxxxxxxx
+                    \nxxxx xxxx xxx xxxxx xxxxxxx xxxxxxxxx xxxxxxx xxx
+                    \nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx."
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layout_navegador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <!-- Línea encima de los botones -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/white"
+                android:text="Inicio"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:icon="@drawable/ic_casa"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/white"
+                android:text="Añadir"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:icon="@drawable/ic_plus"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/white"
+                android:text="Guardado"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:icon="@drawable/ic_guardado"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

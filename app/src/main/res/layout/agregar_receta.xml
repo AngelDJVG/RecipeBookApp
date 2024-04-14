@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/agregar_receta"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <Button
+            android:id="@+id/btnRegresar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:padding="1dp"
+            android:paddingStart="15dp"
+            android:text="&lt;"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:text="Detalles"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    <!--Aquí van los apartados-->
+    <ScrollView
+        android:id="@+id/scroll_apartados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginBottom="67dp"
+        android:padding="5dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <!--Apartado General-->
+            <LinearLayout
+                android:id="@+id/apartado_general"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_bg_rect"
+                android:orientation="vertical">
+
+                <!-- Título "General" -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/edittext_bg_rect"
+                    android:padding="5dp"
+                    android:text="General"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Nombre de la receta -->
+
+                <EditText
+                    android:id="@+id/txt_edit_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/edittext_bg_rounded"
+                    android:hint="Ingresa el nombre de la receta"
+                    android:paddingStart="10dp" />
+
+                <!-- Tipo de receta -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/text_tipo_receta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Tipo de receta:" />
+
+                    <Spinner
+                        android:id="@+id/spinner_tipo_receta"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@id/text_tipo_receta"
+                        android:background="@drawable/edittext_bg_rounded"
+                        android:entries="@array/tipos_receta" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/apartado_ingredientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/apartado_general"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_bg_rect"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/titulo_ingredientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/edittext_bg_rect"
+                    android:padding="5dp"
+                    android:text="Ingredientes"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:weightSum="5">
+
+                    <EditText
+                        android:id="@+id/txt_nombre_ingrediente"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:hint="Ingrediente" />
+
+                    <EditText
+                        android:id="@+id/txt_cantidad_ingredientes"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:hint="Cantidad" />
+
+                    <Spinner
+                        android:id="@+id/spinner_unidad"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+
+                        android:entries="@array/unidades" />
+
+                </LinearLayout>
+                <Button
+                    android:id="@+id/btn_add_ingrediente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Agregar ingrediente" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/apartado_preparacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/apartado_ingredientes"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_bg_rect"
+                android:orientation="vertical">
+
+                <!-- Título "Preparación" -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_bg_rect"
+                    android:padding="5dp"
+                    android:text="Preparación"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Instrucciones de preparación -->
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/txt_edit_preparation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="Ingrese la receta aquí"
+                        android:inputType="textMultiLine"
+                        android:minLines="10"
+                        android:scrollbarStyle="outsideOverlay"
+                        android:scrollbars="vertical"
+                        android:scrollHorizontally="true" />
+                </ScrollView>
+            </LinearLayout>
+
+            <!--Apartado Tiempo-->
+            <LinearLayout
+                android:id="@+id/apartado_tiempo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/apartado_preparacion"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/edittext_bg_rect"
+
+                android:orientation="vertical">
+
+                <!-- Título "Tiempo" -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_bg_rect"
+                    android:padding="5dp"
+                    android:text="Tiempo"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Tiempo de preparación -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/text_time_preparation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Preparacion" />
+
+                    <Spinner
+                        android:id="@+id/spinner_unidad_preparacion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:entries="@array/unidades_tiempo" />
+
+                </LinearLayout>
+
+                <!-- Tiempo de cocinado -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/text_time_cook"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Cocinado" />
+
+                    <Spinner
+                        android:id="@+id/spinner_unidad_cocinado"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:entries="@array/unidades_tiempo" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--Apartado Imagen-->
+            <LinearLayout
+                android:id="@+id/apartado_imagen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/apartado_tiempo"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edittext_bg_rect"
+                android:orientation="vertical">
+
+                <!-- Título "Imagen" -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_bg_rect"
+                    android:padding="5dp"
+                    android:text="Imagen"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Imagen de la receta -->
+                <ImageView
+                    android:id="@+id/imageView_receta"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop" />
+
+                <!-- Seleccionar imagen -->
+                <Button
+                    android:id="@+id/button_seleccionar_imagen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="1dp"
+                    android:text="Adjuntar imagen" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_save_recipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/apartado_imagen"
+                android:layout_gravity="right"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Guardar receta" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black" />
+
+    <LinearLayout
+        android:id="@+id/layout_navegador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/white"
+            android:text="Inicio"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_casa"
+            app:iconGravity="textTop"
+            app:iconPadding="8dp"
+            app:iconSize="24dp"
+            app:iconTint="#000000" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/white"
+            android:text="Añadir"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_plus"
+            app:iconGravity="textTop"
+            app:iconPadding="8dp"
+            app:iconSize="24dp"
+            app:iconTint="#000000" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/white"
+            android:text="Guardado"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_guardado"
+            app:iconGravity="textTop"
+            app:iconPadding="8dp"
+            app:iconSize="24dp"
+            app:iconTint="#000000" />
+
+    </LinearLayout>
+
+</RelativeLayout>
