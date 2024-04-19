@@ -12,6 +12,7 @@
         android:weightSum="4">
 
         <Button
+            android:id="@+id/btnRegresar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -177,12 +178,12 @@
         android:id="@+id/layout_navegador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:orientation="vertical"
         android:gravity="top"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
 
-        <!-- Línea encima de los botones -->
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -195,46 +196,52 @@
             android:weightSum="3">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_home"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
                 android:text="Inicio"
-                android:textColor="@color/black"
                 android:textSize="10sp"
+                app:iconGravity="textTop"
                 app:icon="@drawable/ic_casa"
-                app:iconGravity="textTop"
-                app:iconPadding="8dp"
                 app:iconSize="24dp"
-                app:iconTint="#000000" />
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
                 android:text="Añadir"
-                android:textColor="@color/black"
                 android:textSize="10sp"
-                app:icon="@drawable/ic_plus"
                 app:iconGravity="textTop"
-                app:iconPadding="8dp"
+                app:icon="@drawable/ic_plus"
                 app:iconSize="24dp"
-                app:iconTint="#000000" />
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_saved"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
                 android:text="Guardado"
-                android:textColor="@color/black"
                 android:textSize="10sp"
-                app:icon="@drawable/ic_guardado"
                 app:iconGravity="textTop"
-                app:iconPadding="8dp"
+                app:icon="@drawable/ic_guardado"
                 app:iconSize="24dp"
-                app:iconTint="#000000" />
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

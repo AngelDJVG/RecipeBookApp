@@ -1,5 +1,6 @@
 package com.appsmoviles.proyectomoviles.dominio
 
 data class TiempoReceta(
-    val titulo: String
+    val cantidadTiempo: Int,
+    val formatoTiempo: String
 )

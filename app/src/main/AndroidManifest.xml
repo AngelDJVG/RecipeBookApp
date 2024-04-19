@@ -24,6 +24,7 @@
         <activity android:name=".AgregarRecetaActivity"
             />
         <activity android:name=".VerGuardadosActivity"/>
+        <activity android:name=".VerDetallesRecetaActivity"/>
     </application>
 
 </manifest>

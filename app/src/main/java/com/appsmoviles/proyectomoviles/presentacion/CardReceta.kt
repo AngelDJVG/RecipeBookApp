@@ -1,6 +1,7 @@
 package com.appsmoviles.proyectomoviles.presentacion
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.util.TypedValue
 import android.view.Gravity
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.appsmoviles.proyectomoviles.MainActivity
 import com.appsmoviles.proyectomoviles.R
+import com.appsmoviles.proyectomoviles.VerDetallesRecetaActivity
 import com.appsmoviles.proyectomoviles.VerGuardadosActivity
 import com.appsmoviles.proyectomoviles.databinding.ActivityMainBinding
 import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
@@ -124,7 +126,19 @@ class CardReceta(
                     card.addView(frameLayoutContainer)
 
                     layoutContenedorCards.addView(card)
+
+                    card.setOnClickListener{
+                        // Crear un Intent para abrir VerDetallesRecetaActivity
+                        val intent = Intent(context, VerDetallesRecetaActivity::class.java)
+
+                        // Pasar la instancia de Receta seleccionada a la actividad VerDetallesRecetaActivity
+                        intent.putExtra("receta", receta)
+
+                        // Iniciar la actividad
+                        context.startActivity(intent)
+                    }
                 }
+
             }
         }
     }
