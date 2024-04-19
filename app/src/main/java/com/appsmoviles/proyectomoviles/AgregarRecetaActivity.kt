@@ -44,7 +44,10 @@ class AgregarRecetaActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
+        binding.btnSaved.setOnClickListener {
+            val intent = Intent(this, VerGuardadosActivity::class.java)
+            startActivity(intent)
+        }
         binding.btnSaveRecipe.setOnClickListener {
             guardarReceta()
         }

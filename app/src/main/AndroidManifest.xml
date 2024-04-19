@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".AgregarRecetaActivity"
             />
+        <activity android:name=".VerGuardadosActivity"/>
     </application>
 
 </manifest>

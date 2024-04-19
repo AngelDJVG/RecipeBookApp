@@ -1,0 +1,135 @@
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="@color/white"
+    >
+
+    <GridLayout
+        android:background="@color/white"
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:columnCount="4">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="6"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_bg_rounded"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_lupa"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/buscadorEditText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="5"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                android:hint="Buscar recetas"
+                android:textColorHint="#5C5C5C"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+    </GridLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="5dp">
+        <LinearLayout
+            android:id="@+id/layout_contenedor_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Aquí se inflarán los cards de recetas guardadas -->
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layout_navegador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="top"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_home"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Inicio"
+                android:textSize="10sp"
+                app:iconGravity="textTop"
+                app:icon="@drawable/ic_casa"
+                app:iconSize="24dp"
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Añadir"
+                android:textSize="10sp"
+                app:iconGravity="textTop"
+                app:icon="@drawable/ic_plus"
+                app:iconSize="24dp"
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_saved"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Guardado"
+                android:textSize="10sp"
+                app:iconGravity="textTop"
+                app:icon="@drawable/ic_guardado"
+                app:iconSize="24dp"
+                app:iconPadding="8dp"
+                android:backgroundTint="@android:color/white"
+                android:textColor="@color/black"
+                app:iconTint="#000000"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

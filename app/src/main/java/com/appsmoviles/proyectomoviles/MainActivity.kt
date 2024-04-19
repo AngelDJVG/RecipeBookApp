@@ -23,18 +23,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-           // deleteDatabase("db_recetas")
+        // deleteDatabase("db_recetas")
 
         val database = AppDatabase.getInstance(this)
         recetaDao = database.recetaDAO()
 
         // Observa las recetas de la base de datos y crea una tarjeta para cada una
         recetaDao.obtenerTodasLasRecetas().onEach { recipes ->
-            CardReceta(this, recipes, binding).crearCardsRecetas()
+            CardReceta(this, recipes, listOf(CardReceta.BindingWrapper(mainBinding = binding))).crearCardsRecetas()
         }.launchIn(lifecycleScope)
 
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this, AgregarRecetaActivity::class.java)
+            startActivity(intent)
+        }
+        binding.btnSaved.setOnClickListener {
+            val intent = Intent(this, VerGuardadosActivity::class.java)
             startActivity(intent)
         }
     }
