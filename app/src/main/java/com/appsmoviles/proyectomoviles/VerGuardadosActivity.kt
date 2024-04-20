@@ -11,10 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.presentacion.CardReceta
+import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.google.gson.Gson
 import kotlin.math.roundToInt
 
-class VerGuardadosActivity : AppCompatActivity() {
+class VerGuardadosActivity : AppCompatActivity(), RecetaGuardadaListener {
 
     private lateinit var binding: VerGuardadosBinding
 
@@ -43,7 +44,7 @@ class VerGuardadosActivity : AppCompatActivity() {
             emptyList()
         }
 
-        val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)))
+        val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
         cardReceta.crearCardsRecetas()
 
         if (recetasGuardadas.isEmpty()) {
@@ -66,5 +67,10 @@ class VerGuardadosActivity : AppCompatActivity() {
             this.toFloat(),
             context.resources.displayMetrics
         ).roundToInt()
+    }
+
+    override fun cambioGuardado() {
+        binding.layoutContenedorCards.removeAllViews()
+        mostrarRecetasGuardadas()
     }
 }

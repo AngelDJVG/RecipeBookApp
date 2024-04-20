@@ -20,15 +20,18 @@ import com.appsmoviles.proyectomoviles.VerGuardadosActivity
 import com.appsmoviles.proyectomoviles.databinding.ActivityMainBinding
 import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
+import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.google.gson.Gson
 import kotlin.math.roundToInt
 
 class CardReceta(
     private val context: Context,
     private val recetas: List<Receta>,
-    private val bindings: List<BindingWrapper> = emptyList()
+    private val bindings: List<BindingWrapper> = emptyList() ,
+    private val listener: RecetaGuardadaListener? = null
 ) {
     data class BindingWrapper(val mainBinding: ActivityMainBinding? = null, val verGuardadosBinding: VerGuardadosBinding? = null)
+    // Interfaz para escuchar cambios en las recetas
 
     fun crearCardsRecetas() {
         val binding = getAvailableBinding()
@@ -117,6 +120,7 @@ class CardReceta(
                         )
                         setOnClickListener {
                             toggleGuardarReceta(receta)
+                            // Notificar al listener que la receta ha cambiado
                         }
                     }
 
@@ -164,6 +168,7 @@ class CardReceta(
         val recetasJsonUpdated = gson.toJson(recetasGuardadas)
         editor.putString("recetas_guardadas", recetasJsonUpdated)
         editor.apply()
+        listener?.cambioGuardado()
     }
 
     private fun Int.dpToPx(context: Context): Int {
