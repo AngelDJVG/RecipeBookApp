@@ -1,122 +1,121 @@
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="5dp"
     android:background="@color/white"
-    >
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <GridLayout
-        android:background="@color/white"
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:columnCount="4">
+        android:background="@color/white"
+        android:columnCount="4"
+        android:padding="12dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="6"
-            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/edittext_bg_rounded"
-            android:layout_gravity="center_vertical">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="34dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_lupa"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_lupa" />
 
             <EditText
                 android:id="@+id/buscadorEditText"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="5"
                 android:background="@android:color/transparent"
-                android:textColor="@color/black"
                 android:hint="Buscar recetas"
-                android:textColorHint="#5C5C5C"
-                android:layout_gravity="center_vertical"/>
+                android:textColor="@color/black"
+                android:textColorHint="#5C5C5C" />
         </LinearLayout>
     </GridLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/layout_contenedor_cards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Aquí esta el card de prueba
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/edittext_bg_rounded"
-                    android:padding="16dp"
-                    android:layout_marginBottom="16dp">
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/recipe_1_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Recipe 1 Name" />
-                        <TextView
-                            android:id="@+id/recipe_1_description"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Receta 1 descripción. Esta no es una receta real. hola hola hola hola hola"
-                            android:layout_marginEnd="10dp"/>
-                    </LinearLayout>
 
-                    <FrameLayout
-                        android:layout_width="150dp"
-                        android:layout_height="100dp" >
-
-                        <ImageView
-                            android:id="@+id/recipe_1_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/imagen_receta" />
-
-                        <ImageButton
-                            android:id="@+id/recipe_1_favorite_button"
-                            android:layout_width="25dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="top|end"
-                            android:layout_margin="10dp"
-                            android:background="@null"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_guardado_relleno" />
-                    </FrameLayout>
-                </LinearLayout>
-                -->
             </LinearLayout>
+
+        </LinearLayout>
+
+
     </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/layout_botones_paginado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="center_vertical"
+        android:background="#00FFFFFF">
+
+        <Button
+            android:id="@+id/btn_anterior_paginado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:backgroundTint="@color/btn_estado_color"
+            android:text="&lt;"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/texto_paginado"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/texto_paginado" />
+
+        <Button
+            android:id="@+id/btn_siguiente_paginado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:backgroundTint="@color/btn_estado_color"
+            android:text="&gt;"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_navegador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="top"
+        android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:layout_alignParentBottom="true">
+        android:gravity="top"
+        android:orientation="vertical">
 
 
         <View
@@ -135,48 +134,45 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Inicio"
-                android:textSize="10sp"
-                app:iconGravity="textTop"
-                app:icon="@drawable/ic_casa"
-                app:iconSize="24dp"
-                app:iconPadding="8dp"
                 android:backgroundTint="@android:color/white"
+                android:text="Inicio"
                 android:textColor="@color/black"
-                app:iconTint="#000000"
-                />
+                android:textSize="10sp"
+                app:icon="@drawable/ic_casa"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Añadir"
-                android:textSize="10sp"
-                app:iconGravity="textTop"
-                app:icon="@drawable/ic_plus"
-                app:iconSize="24dp"
-                app:iconPadding="8dp"
                 android:backgroundTint="@android:color/white"
+                android:text="Añadir"
                 android:textColor="@color/black"
-                app:iconTint="#000000"
-                />
+                android:textSize="10sp"
+                app:icon="@drawable/ic_plus"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_saved"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Guardado"
-                android:textSize="10sp"
-                app:iconGravity="textTop"
-                app:icon="@drawable/ic_guardado"
-                app:iconSize="24dp"
-                app:iconPadding="8dp"
                 android:backgroundTint="@android:color/white"
+                android:text="Guardado"
                 android:textColor="@color/black"
-                app:iconTint="#000000"
-                />
+                android:textSize="10sp"
+                app:icon="@drawable/ic_guardado"
+                app:iconGravity="textTop"
+                app:iconPadding="8dp"
+                app:iconSize="24dp"
+                app:iconTint="#000000" />
         </LinearLayout>
     </LinearLayout>
 

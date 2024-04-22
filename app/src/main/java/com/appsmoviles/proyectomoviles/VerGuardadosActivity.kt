@@ -8,43 +8,79 @@ import android.util.TypedValue
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.presentacion.CardReceta
 import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
+import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 class VerGuardadosActivity : AppCompatActivity(), RecetaGuardadaListener {
 
     private lateinit var binding: VerGuardadosBinding
+    private lateinit var recetaManejador: RecetaManejador
+    private var limiteRecetasPaginado: Int = 5
+    private var numeroPaginado: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VerGuardadosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        recetaManejador = RecetaManejador(this)
         mostrarRecetasGuardadas()
-        binding.btnHome.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+        asignarListenerABotones()
+
+    }
+
+    private fun asignarListenerABotones() {
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this, AgregarRecetaActivity::class.java)
             startActivity(intent)
         }
+        binding.btnSaved.setOnClickListener {
+            val intent = Intent(this, VerGuardadosActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnAnteriorPaginado.setOnClickListener {
+            retrocederPagina()
+        }
+
+        binding.btnSiguientePaginado.setOnClickListener {
+            avanzarPagina()
+
+        }
+    }
+
+    private fun avanzarPagina() {
+        numeroPaginado += 5
+        cargarRecetasPreferences()
+        actualizarBotonesPaginado()
+    }
+
+    private fun retrocederPagina() {
+        if (numeroPaginado > 0) {
+            numeroPaginado -= 5
+            if (numeroPaginado < 0) {
+                numeroPaginado = 0
+            }
+            cargarRecetasPreferences()
+            actualizarBotonesPaginado()
+        }
     }
 
     private fun mostrarRecetasGuardadas() {
-        val sharedPreferences = getSharedPreferences("recetas", Context.MODE_PRIVATE)
-        val recetasJson = sharedPreferences.getString("recetas_guardadas", "")
-        val gson = Gson()
-        val recetasGuardadas: List<Receta> = if (!recetasJson.isNullOrEmpty()) {
-            gson.fromJson(recetasJson, Array<Receta>::class.java).toList()
-        } else {
-            emptyList()
-        }
+        val recetasGuardadas = recetaManejador.getRecetasGuardadas()
 
-        val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
+        val cardReceta = CardReceta(this, recetasGuardadas.toList(), listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
         cardReceta.crearCardsRecetas()
 
         if (recetasGuardadas.isEmpty()) {
@@ -72,5 +108,33 @@ class VerGuardadosActivity : AppCompatActivity(), RecetaGuardadaListener {
     override fun cambioGuardado() {
         binding.layoutContenedorCards.removeAllViews()
         mostrarRecetasGuardadas()
+    }
+
+    private fun cargarRecetasPreferences() {
+        //CARGAR RECETAS DEL SHARED
+    }
+
+    private fun actualizarBotonesPaginado() {
+        //METER LO DEL SHARED
+
+        /*
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val totalRecetas = recetaDao.obtenerNumeroTotalRecetas().first() ?: 0
+            val hayRecetasAnteriores = numeroPaginado > 0
+            val hayRecetasSiguientes = numeroPaginado + limiteRecetasPaginado < totalRecetas
+
+            val paginaActual = numeroPaginado / limiteRecetasPaginado + 1
+            val paginasTotales = (totalRecetas + limiteRecetasPaginado - 1) / limiteRecetasPaginado
+
+            withContext(Dispatchers.Main) {
+                binding.btnAnteriorPaginado.isEnabled = hayRecetasAnteriores
+                binding.btnSiguientePaginado.isEnabled = hayRecetasSiguientes
+
+                binding.textoPaginado.text = "$paginaActual/$paginasTotales"
+            }
+        }
+         */
+
     }
 }

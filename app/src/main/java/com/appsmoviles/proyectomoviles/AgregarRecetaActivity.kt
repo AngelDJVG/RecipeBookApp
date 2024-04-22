@@ -34,8 +34,13 @@ class AgregarRecetaActivity : AppCompatActivity() {
 
         val bd = AppDatabase.getInstance(applicationContext)
         recetaDAO = bd.recetaDAO()
+        asignarListenerABotones()
 
 
+    }
+
+
+    private fun asignarListenerABotones() {
         binding.btnRegresar.setOnClickListener {
             finish()
         }
@@ -43,10 +48,12 @@ class AgregarRecetaActivity : AppCompatActivity() {
         binding.btnHome.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
         binding.btnSaved.setOnClickListener {
             val intent = Intent(this, VerGuardadosActivity::class.java)
             startActivity(intent)
+            finish()
         }
         binding.btnSaveRecipe.setOnClickListener {
             guardarReceta()
@@ -77,9 +84,9 @@ class AgregarRecetaActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 recetaDAO.insertarReceta(nuevaReceta)
-                mostrarMensaje("Receta registrada con éxito")
+                mostrarMensajeExitoAndBackToMain()
             } catch (ex: Exception) {
-                mostrarMensaje("VALIO MADRE")
+                mostrarMensajeErrorAndBackToMain()
             }
         }
     }
@@ -120,7 +127,8 @@ class AgregarRecetaActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1.0f
             )
-            text = "${nuevoIngrediente.nombre}: ${nuevoIngrediente.cantidad} ${nuevoIngrediente.unidad}"
+            text =
+                "${nuevoIngrediente.nombre}: ${nuevoIngrediente.cantidad} ${nuevoIngrediente.unidad}"
         }
 
         val deleteButton = Button(applicationContext).apply {
@@ -142,14 +150,52 @@ class AgregarRecetaActivity : AppCompatActivity() {
     }
 
 
-    private fun mostrarMensaje(mensaje: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Error")
-        builder.setMessage(mensaje)
-        builder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
+    private fun mostrarMensajeErrorAndBackToMain() {
+        runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Error")
+            builder.setMessage("Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.")
+            builder.setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                volverAPantallaPrincipal()
+            }
+            val dialog = builder.create()
+            dialog.show()
         }
-        val dialog = builder.create()
-        dialog.show()
+    }
+
+    private fun mostrarMensajeExitoAndBackToMain() {
+        runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Éxito")
+            builder.setMessage("¡La receta se ha guardado con éxito!")
+            builder.setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                volverAPantallaPrincipal()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
+    private fun mostrarMensajeFaltaDatosAndBackToMain() {
+        runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Faltan datos")
+            builder.setMessage("Por favor, completa todos los campos antes de continuar.")
+            builder.setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                volverAPantallaPrincipal()
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
+    private fun volverAPantallaPrincipal() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
     }
 }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.appsmoviles.proyectomoviles.databinding.VerDetallesRecetaBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
+import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
 
 class VerDetallesRecetaActivity : AppCompatActivity() {
     private lateinit var binding: VerDetallesRecetaBinding
@@ -19,6 +20,39 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         binding = VerDetallesRecetaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        asignarListenerABotones()
+        val receta = intent.getParcelableExtra("receta",Receta::class.java)
+
+        if (receta != null) {
+            desplegarDatosReceta(receta)
+        } else {
+            // Manejar el caso en el que no se recibió ninguna receta
+            // Por ejemplo, mostrar un mensaje de error o volver a la actividad anterior
+            // Aquí puedes agregar tu lógica personalizada
+        }
+
+    }
+
+    private fun desplegarDatosReceta(receta: Receta){
+        val tiempoTotal = sumarTiempos(receta.tiempoPreparacion, receta.tiempoCocinado)
+        val jsonIngredientes = receta.listaIngredientes
+
+
+        findViewById<ImageView>(R.id.imagen_receta).setImageDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.imagen_receta
+            )
+        )
+        findViewById<TextView>(R.id.nombre_receta).text = receta.titulo
+        findViewById<TextView>(R.id.tiempo_preparacion).text = "Preparación: ${receta.tiempoPreparacion}"
+        findViewById<TextView>(R.id.tiempo_cocinado).text = "Cocinado: ${receta.tiempoCocinado}"
+        findViewById<TextView>(R.id.tiempo_total).text = "Total: $tiempoTotal"
+        findViewById<TextView>(R.id.lista_ingredientes).text = manejarListaIngredientes(jsonIngredientes)
+        findViewById<TextView>(R.id.pasos_preparacion).text = receta.preparacion
+    }
+
+    private fun asignarListenerABotones(){
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this, AgregarRecetaActivity::class.java)
             startActivity(intent)
@@ -34,40 +68,12 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         binding.btnRegresar.setOnClickListener {
             finish()
         }
-        // Obtener la instancia de Receta enviada desde la actividad anterior de manera segura
-        val receta = intent.getParcelableExtra("receta",Receta::class.java)
-
-        // Verificar si la receta no es nula
-        if (receta != null) {
-            // Calcular el tiempo total sumando el tiempo de preparación y el tiempo cocinado
-            val tiempoTotal = sumarTiempos(receta.tiempoPreparacion, receta.tiempoCocinado)
-
-            // Mostrar los datos en los campos correspondientes
-            findViewById<ImageView>(R.id.imagen_receta).setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.imagen_receta
-                )
-            ) // Cambia "imagen_receta" por el nombre del recurso de la imagen
-            findViewById<TextView>(R.id.nombre_receta).text = receta.titulo
-            findViewById<TextView>(R.id.tiempo_preparacion).text = "Preparación: ${receta.tiempoPreparacion}"
-            findViewById<TextView>(R.id.tiempo_cocinado).text = "Cocinado: ${receta.tiempoCocinado}"
-            findViewById<TextView>(R.id.tiempo_total).text = "Total: $tiempoTotal"
-            findViewById<TextView>(R.id.lista_ingredientes).text = receta.listaIngredientes
-            findViewById<TextView>(R.id.pasos_preparacion).text = receta.preparacion
-        } else {
-            // Manejar el caso en el que no se recibió ninguna receta
-            // Por ejemplo, mostrar un mensaje de error o volver a la actividad anterior
-            // Aquí puedes agregar tu lógica personalizada
-        }
-
     }
 
     private fun sumarTiempos(tiempo1: String, tiempo2: String): String {
         val tiempo1Parts = tiempo1.split(":")
         val tiempo2Parts = tiempo2.split(":")
 
-        // Verificar si los tiempos tienen el formato esperado
         if (tiempo1Parts.size != 2 || tiempo2Parts.size != 2) {
             return "Formato de tiempo incorrecto"
         }
@@ -75,15 +81,29 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         val (horas1, minutos1) = tiempo1Parts.map { it.toInt() }
         val (horas2, minutos2) = tiempo2Parts.map { it.toInt() }
 
-        // Sumar horas y minutos
         val horasTotales = horas1 + horas2
         val minutosTotales = minutos1 + minutos2
 
-        // Ajustar los minutos si superan 60
         val horasExtra = minutosTotales / 60
         val minutosRestantes = minutosTotales % 60
 
-        // Devolver el tiempo total en formato "HH:MM"
         return String.format("%02d:%02d", horasTotales + horasExtra, minutosRestantes)
+    }
+
+    private fun manejarListaIngredientes(jsonIngredientes: String): String{
+
+
+        val listaIngredientes = ManejadorJson.obtenerListaIngredientesDesdeJson(jsonIngredientes)
+
+        val textoIngredientes = listaIngredientes.joinToString("\n") {
+            val cantidadString = if (it.cantidad % 1.0 == 0.0) {
+                it.cantidad.toInt().toString()
+            } else {
+                it.cantidad.toString()
+            }
+            "$cantidadString ${it.unidad} ${it.nombre} "
+        }
+
+        return textoIngredientes
     }
 }

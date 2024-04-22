@@ -21,4 +21,10 @@ interface RecetaDAO {
 
     @Query("SELECT * FROM Receta WHERE id = :id")
     fun obtenerRecetaPorId(id: Long): Flow<Receta?>
+
+    @Query("SELECT * FROM Receta LIMIT :limit OFFSET :offset")
+    fun obtenerRecetasPaginadas(limit: Int, offset: Int): Flow<List<Receta>>
+
+    @Query("SELECT COUNT(*) FROM Receta")
+    fun obtenerNumeroTotalRecetas(): Flow<Int>
 }
