@@ -11,6 +11,8 @@ import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 import com.appsmoviles.proyectomoviles.databinding.ActivityMainBinding
 import com.appsmoviles.proyectomoviles.db.AppDatabase
 import com.appsmoviles.proyectomoviles.presentacion.CardReceta
+import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
+import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -25,13 +27,16 @@ class MainActivity : AppCompatActivity() {
     private var numeroPaginado: Int = 0
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //val recetaManejador = RecetaManejador(this)
+        //recetaManejador.borrarTodosLosRegistros()
+        //deleteDatabase("db_recetas")
 
-        // deleteDatabase("db_recetas")
 
         val database = AppDatabase.getInstance(this)
         recetaDao = database.recetaDAO()
@@ -95,12 +100,12 @@ class MainActivity : AppCompatActivity() {
             val hayRecetasSiguientes = numeroPaginado + limiteRecetasPaginado < totalRecetas
 
             val paginaActual = numeroPaginado / limiteRecetasPaginado + 1
-            val paginasTotales = (totalRecetas + limiteRecetasPaginado - 1) / limiteRecetasPaginado
+            var paginasTotales = (totalRecetas + limiteRecetasPaginado - 1) / limiteRecetasPaginado
 
             withContext(Dispatchers.Main) {
                 binding.btnAnteriorPaginado.isEnabled = hayRecetasAnteriores
                 binding.btnSiguientePaginado.isEnabled = hayRecetasSiguientes
-
+                if(paginasTotales == 0) paginasTotales = 1
                 binding.textoPaginado.text = "$paginaActual/$paginasTotales"
             }
         }

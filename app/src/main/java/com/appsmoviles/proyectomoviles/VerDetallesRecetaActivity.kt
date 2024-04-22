@@ -1,6 +1,9 @@
 package com.appsmoviles.proyectomoviles
 
+import com.bumptech.glide.Glide
+import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
@@ -21,14 +24,21 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         asignarListenerABotones()
-        val receta = intent.getParcelableExtra("receta",Receta::class.java)
+        val receta = intent.getParcelableExtra<Receta>("receta")
 
         if (receta != null) {
             desplegarDatosReceta(receta)
         } else {
-            // Manejar el caso en el que no se recibió ninguna receta
-            // Por ejemplo, mostrar un mensaje de error o volver a la actividad anterior
-            // Aquí puedes agregar tu lógica personalizada
+            runOnUiThread {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Error")
+                builder.setMessage("Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.")
+                builder.setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                val dialog = builder.create()
+                dialog.show()
+            }
         }
 
     }
@@ -36,19 +46,21 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
     private fun desplegarDatosReceta(receta: Receta){
         val tiempoTotal = sumarTiempos(receta.tiempoPreparacion, receta.tiempoCocinado)
         val jsonIngredientes = receta.listaIngredientes
+        val listaIngredientes = manejarListaIngredientes(jsonIngredientes)
+
+        println("DESPUES DE MANEJARLISTAINGREDIENTES $listaIngredientes")
 
 
-        findViewById<ImageView>(R.id.imagen_receta).setImageDrawable(
-            ContextCompat.getDrawable(
-                this,
-                R.drawable.imagen_receta
-            )
-        )
+        if (!receta.imagen.isNullOrEmpty()) {
+            val imageView = findViewById<ImageView>(R.id.imagen_receta)
+            Glide.with(this).load(Uri.parse(receta.imagen)).into(imageView)
+        }
+
         findViewById<TextView>(R.id.nombre_receta).text = receta.titulo
         findViewById<TextView>(R.id.tiempo_preparacion).text = "Preparación: ${receta.tiempoPreparacion}"
         findViewById<TextView>(R.id.tiempo_cocinado).text = "Cocinado: ${receta.tiempoCocinado}"
         findViewById<TextView>(R.id.tiempo_total).text = "Total: $tiempoTotal"
-        findViewById<TextView>(R.id.lista_ingredientes).text = manejarListaIngredientes(jsonIngredientes)
+        findViewById<TextView>(R.id.lista_ingredientes).text = listaIngredientes
         findViewById<TextView>(R.id.pasos_preparacion).text = receta.preparacion
     }
 
@@ -91,9 +103,9 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
     }
 
     private fun manejarListaIngredientes(jsonIngredientes: String): String{
-
-
+        println("JSON: $jsonIngredientes")
         val listaIngredientes = ManejadorJson.obtenerListaIngredientesDesdeJson(jsonIngredientes)
+        println("JSON A STRING: $listaIngredientes")
 
         val textoIngredientes = listaIngredientes.joinToString("\n") {
             val cantidadString = if (it.cantidad % 1.0 == 0.0) {

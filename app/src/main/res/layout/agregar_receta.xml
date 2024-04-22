@@ -70,6 +70,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/edittext_bg_rect"
                     android:padding="5dp"
+                    android:textColor="@color/black"
                     android:text="General"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -81,10 +82,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:textColor="@color/black"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/edittext_bg_rounded"
                     android:hint="Ingresa el nombre de la receta"
+                    android:textColorHint="#656565"
                     android:paddingStart="10dp" />
 
                 <!-- Tipo de receta -->
@@ -98,6 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:textColor="@color/black"
                         android:text="Tipo de receta:" />
 
                     <Spinner
@@ -105,6 +109,7 @@
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:textColor="@color/black"
                         android:layout_toEndOf="@id/text_tipo_receta"
                         android:background="@drawable/edittext_bg_rounded"
                         android:entries="@array/tipos_receta" />
@@ -132,6 +137,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/edittext_bg_rect"
                     android:padding="5dp"
+                    android:textColor="@color/black"
                     android:text="Ingredientes"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -150,6 +156,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:textColorHint="#656565"
+                        android:textColor="@color/black"
                         android:hint="Ingrediente" />
 
                     <EditText
@@ -157,6 +165,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
+                        android:textColorHint="#656565"
+                        android:textColor="@color/black"
                         android:hint="Cantidad" />
 
                     <Spinner
@@ -164,7 +174,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
-
+                        android:textColor="@color/black"
                         android:entries="@array/unidades" />
 
                 </LinearLayout>
@@ -173,6 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:backgroundTint="@color/btn_estado_color"
                     android:text="Agregar ingrediente" />
             </LinearLayout>
 
@@ -195,6 +206,7 @@
                     android:background="@drawable/edittext_bg_rect"
                     android:padding="5dp"
                     android:text="Preparación"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -208,9 +220,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
+                        android:textColorHint="#656565"
                         android:hint="Ingrese la receta aquí"
                         android:inputType="textMultiLine"
                         android:minLines="10"
+                        android:textColor="@color/black"
                         android:scrollbarStyle="outsideOverlay"
                         android:scrollbars="vertical"
                         android:scrollHorizontally="true" />
@@ -238,6 +252,7 @@
                     android:padding="5dp"
                     android:text="Tiempo"
                     android:textSize="18sp"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <!-- Tiempo de preparación -->
@@ -252,6 +267,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColorHint="#656565"
+                        android:textColor="@color/black"
                         android:hint="Preparacion" />
 
                     <Spinner
@@ -259,6 +276,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/black"
                         android:entries="@array/unidades_tiempo" />
 
                 </LinearLayout>
@@ -275,6 +293,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColorHint="#656565"
+                        android:textColor="@color/black"
                         android:hint="Cocinado" />
 
                     <Spinner
@@ -282,6 +302,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/black"
                         android:entries="@array/unidades_tiempo" />
 
                 </LinearLayout>
@@ -307,6 +328,7 @@
                     android:background="@drawable/edittext_bg_rect"
                     android:padding="5dp"
                     android:text="Imagen"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -319,11 +341,12 @@
 
                 <!-- Seleccionar imagen -->
                 <Button
-                    android:id="@+id/button_seleccionar_imagen"
+                    android:id="@+id/btn_seleccionar_imagen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="1dp"
+                    android:backgroundTint="@color/btn_estado_color"
                     android:text="Adjuntar imagen" />
             </LinearLayout>
 
@@ -337,6 +360,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/btn_estado_color"
+
                 android:text="Guardar receta" />
 
         </RelativeLayout>

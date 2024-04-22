@@ -5,10 +5,16 @@ import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+
+
 class RecetaManejador(private val context: Context) {
 
     private val sharedPreferences = context.getSharedPreferences("Recetas", Context.MODE_PRIVATE)
     private val gson = Gson()
+
+    companion object {
+        private const val RECETAS_GUARDADAS_KEY = "recetas_guardadas"
+    }
 
     fun isRecetaGuardada(receta: Receta): Boolean {
         val recetasGuardadas = getRecetasGuardadas()
@@ -17,12 +23,7 @@ class RecetaManejador(private val context: Context) {
 
     fun toggleGuardarReceta(receta: Receta) {
         val editor = sharedPreferences.edit()
-        val recetasJson = sharedPreferences.getString("recetas_guardadas", "")
-        val recetasGuardadas: MutableList<Receta> = if (!recetasJson.isNullOrEmpty()) {
-            gson.fromJson(recetasJson, object : TypeToken<List<Receta>>() {}.type)
-        } else {
-            mutableListOf()
-        }
+        val recetasGuardadas = getRecetasGuardadas().toMutableList()
 
         val index = recetasGuardadas.indexOfFirst { it.titulo == receta.titulo }
         if (index != -1) {
@@ -32,23 +33,31 @@ class RecetaManejador(private val context: Context) {
         }
 
         val recetasJsonUpdated = gson.toJson(recetasGuardadas)
-        editor.putString("recetas_guardadas", recetasJsonUpdated)
-        editor.apply()
-    }
-
-    private fun saveRecetasGuardadas(recetas: Set<Receta>) {
-        val editor = sharedPreferences.edit()
-        val json = gson.toJson(recetas.toList())
-        editor.putString("recetas_guardadas", json)
+        editor.putString(RECETAS_GUARDADAS_KEY, recetasJsonUpdated)
         editor.apply()
     }
 
     fun getRecetasGuardadas(): Set<Receta> {
-        val json = sharedPreferences.getString("recetas_guardadas", null)
-        return if (json != null) {
-            gson.fromJson(json, object : TypeToken<Set<Receta>>() {}.type)
-        } else {
-            emptySet()
-        }
+        val json = sharedPreferences.getString(RECETAS_GUARDADAS_KEY, null)
+        return json?.let {
+            gson.fromJson(it, object : TypeToken<Set<Receta>>() {}.type)
+        } ?: emptySet()
+    }
+
+    fun getRecetasGuardadasPaginado(itemsPerPage: Int, pageNumber: Int): List<Receta> {
+        val json = sharedPreferences.getString(RECETAS_GUARDADAS_KEY, null)
+        val recetasGuardadas = json?.let {
+            gson.fromJson<List<Receta>>(it, object : TypeToken<List<Receta>>() {}.type)
+        } ?: emptyList()
+
+        val startIndex = (pageNumber - 1) * itemsPerPage
+        val endIndex = minOf(startIndex + itemsPerPage, recetasGuardadas.size)
+        return recetasGuardadas.subList(startIndex, endIndex)
+    }
+
+    fun borrarTodosLosRegistros() {
+        val editor = sharedPreferences.edit()
+        editor.remove(RECETAS_GUARDADAS_KEY)
+        editor.apply()
     }
 }

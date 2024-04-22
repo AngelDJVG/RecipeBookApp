@@ -2,7 +2,9 @@ package com.appsmoviles.proyectomoviles.presentacion
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.FrameLayout
@@ -22,6 +24,7 @@ import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
+import com.bumptech.glide.Glide
 import kotlin.math.roundToInt
 
 class CardReceta(
@@ -33,7 +36,11 @@ class CardReceta(
 
     ) {
     private val recetaManejador = RecetaManejador(context)
-    data class BindingWrapper(val mainBinding: ActivityMainBinding? = null, val verGuardadosBinding: VerGuardadosBinding? = null)
+
+    data class BindingWrapper(
+        val mainBinding: ActivityMainBinding? = null,
+        val verGuardadosBinding: VerGuardadosBinding? = null
+    )
     // Interfaz para escuchar cambios en las recetas
 
     fun crearCardsRecetas() {
@@ -74,6 +81,7 @@ class CardReceta(
                     val titulo = TextView(context).apply {
                         text = receta.titulo
                         setTypeface(null, Typeface.BOLD)
+                        setTextColor(Color.BLACK)
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -81,6 +89,7 @@ class CardReceta(
                     }
                     val descripcion = TextView(context).apply {
                         text = receta.preparacion
+                        setTextColor(Color.BLACK)
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -100,19 +109,19 @@ class CardReceta(
                             FrameLayout.LayoutParams.MATCH_PARENT
                         )
                         scaleType = ImageView.ScaleType.FIT_XY
-                        setImageDrawable(
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.imagen_receta
-                            )
-                        )
+                    }
+
+
+                    receta.imagen?.let { uriString ->
+                        val uri = Uri.parse(uriString)
+                        Glide.with(context)
+                            .load(uri)
+                            .into(imagen)
                     }
 
                     val btnGuardar = ImageButton(context).apply {
                         layoutParams = FrameLayout.LayoutParams(
-                            52.dpToPx(context),
-                            55.dpToPx(context),
-                            Gravity.TOP or Gravity.END
+                            52.dpToPx(context), 55.dpToPx(context), Gravity.TOP or Gravity.END
                         ).apply {
                             leftMargin = 5.dpToPx(context)
                             topMargin = 5.dpToPx(context)
@@ -147,7 +156,7 @@ class CardReceta(
 
                     layoutContenedorCards.addView(card)
 
-                    card.setOnClickListener{
+                    card.setOnClickListener {
                         val intent = Intent(context, VerDetallesRecetaActivity::class.java)
 
                         intent.putExtra("receta", receta)
@@ -166,9 +175,7 @@ class CardReceta(
 
     private fun Int.dpToPx(context: Context): Int {
         return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            this.toFloat(),
-            context.resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics
         ).roundToInt()
     }
 

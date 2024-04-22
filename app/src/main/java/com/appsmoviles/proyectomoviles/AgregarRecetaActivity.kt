@@ -3,15 +3,19 @@ package com.appsmoviles.proyectomoviles
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.appsmoviles.proyectomoviles.daos.RecetaDAO
-import com.appsmoviles.proyectomoviles.db.AppDatabase
 import com.appsmoviles.proyectomoviles.databinding.AgregarRecetaBinding
+import com.appsmoviles.proyectomoviles.db.AppDatabase
 import com.appsmoviles.proyectomoviles.dominio.Ingrediente
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.enums.TipoReceta
@@ -21,10 +25,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 class AgregarRecetaActivity : AppCompatActivity() {
     private lateinit var binding: AgregarRecetaBinding
     private lateinit var recetaDAO: RecetaDAO
     private val listaIngredientes = mutableListOf<Ingrediente>()
+    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +68,53 @@ class AgregarRecetaActivity : AppCompatActivity() {
         binding.btnAddIngrediente.setOnClickListener {
             agregarIngrediente()
         }
+
+        binding.btnSeleccionarImagen.setOnClickListener{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                    REQUEST_CODE_PERMISSION
+                )
+            } else {
+                abrirGaleria()
+            }
+        }
+    }
+
+    private fun abrirGaleria() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                abrirGaleria()
+            } else {
+
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            // Obtener la URI de la imagen seleccionada
+            imageUri = data.data
+            // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un ImageView
+            binding.imageViewReceta.setImageURI(imageUri)
+        }
     }
 
     private fun guardarReceta() {
@@ -70,7 +123,11 @@ class AgregarRecetaActivity : AppCompatActivity() {
         val preparacion = binding.txtEditPreparation.text.toString()
         val tiempoPreparacion = binding.textTimePreparation.text.toString()
         val tiempoCocinado = binding.textTimeCook.text.toString()
-        val imagen: String? = null
+        var imagen: String? = null
+
+        if (imageUri != null) {
+            imagen = imageUri.toString()
+        }
 
         val nuevaReceta = Receta(
             titulo = titulo,
@@ -84,7 +141,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 recetaDAO.insertarReceta(nuevaReceta)
-                mostrarMensajeExitoAndBackToMain()
+                mostrarMensajeExito()
             } catch (ex: Exception) {
                 mostrarMensajeErrorAndBackToMain()
             }
@@ -107,7 +164,6 @@ class AgregarRecetaActivity : AppCompatActivity() {
             else -> Unidad.PZ
         }
         val nuevoIngrediente = Ingrediente(nombre, cantidad, unidad)
-        listaIngredientes.add(nuevoIngrediente)
         actualizarLayoutIngredientes(nuevoIngrediente)
     }
 
@@ -164,7 +220,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
         }
     }
 
-    private fun mostrarMensajeExitoAndBackToMain() {
+    private fun mostrarMensajeExito() {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Éxito")
@@ -178,7 +234,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
         }
     }
 
-    private fun mostrarMensajeFaltaDatosAndBackToMain() {
+    private fun mostrarMensajeFaltaDatos() {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Faltan datos")
@@ -198,4 +254,10 @@ class AgregarRecetaActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSION = 100
+        private const val REQUEST_CODE_PICK_IMAGE = 101
+    }
+
 }
