@@ -26,12 +26,12 @@ import kotlin.math.roundToInt
 
 class CardReceta(
     private val context: Context,
-    private val recetas: List<Receta>,
-    private val bindings: List<BindingWrapper> = emptyList() ,
+    private var recetas: List<Receta>,
+    private val bindings: List<BindingWrapper> = emptyList(),
     private val listener: RecetaGuardadaListener? = null,
 
 
-) {
+    ) {
     private val recetaManejador = RecetaManejador(context)
     data class BindingWrapper(val mainBinding: ActivityMainBinding? = null, val verGuardadosBinding: VerGuardadosBinding? = null)
     // Interfaz para escuchar cambios en las recetas
@@ -127,8 +127,16 @@ class CardReceta(
                         )
                         setOnClickListener {
                             toggleGuardarReceta(receta)
+
+                            when (context) {
+                                is VerGuardadosActivity -> {
+                                    val recetasMutable = recetas.toMutableList()
+                                    recetasMutable.remove(receta)
+                                    recetas = recetasMutable.toList()
+                                }
+
+                            }
                             crearCardsRecetas()
-                            mostrarMensaje("Cambios guardados")
                         }
                     }
 

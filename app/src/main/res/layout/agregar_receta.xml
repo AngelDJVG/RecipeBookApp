@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/header"
@@ -340,11 +341,12 @@
 
         </RelativeLayout>
     </ScrollView>
-
     <View
+
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/black" />
+        android:background="@color/black"
+        android:layout_above="@id/layout_navegador"/>
 
     <LinearLayout
         android:id="@+id/layout_navegador"

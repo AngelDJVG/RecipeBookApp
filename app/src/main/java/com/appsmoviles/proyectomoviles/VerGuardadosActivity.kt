@@ -41,6 +41,10 @@ class VerGuardadosActivity : AppCompatActivity(), RecetaGuardadaListener {
     }
 
     private fun asignarListenerABotones() {
+        binding.btnHome.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this, AgregarRecetaActivity::class.java)
             startActivity(intent)
