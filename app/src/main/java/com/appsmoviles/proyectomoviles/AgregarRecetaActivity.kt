@@ -44,8 +44,6 @@ class AgregarRecetaActivity : AppCompatActivity() {
         val bd = AppDatabase.getInstance(applicationContext)
         recetaDAO = bd.recetaDAO()
         asignarListenerABotones()
-
-
     }
 
 
