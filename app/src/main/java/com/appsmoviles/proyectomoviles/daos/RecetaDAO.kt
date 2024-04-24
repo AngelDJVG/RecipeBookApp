@@ -1,7 +1,6 @@
 
 package com.appsmoviles.proyectomoviles.daos
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.appsmoviles.proyectomoviles.dominio.Receta
@@ -16,11 +15,14 @@ interface RecetaDAO {
     @Query("DELETE FROM Receta WHERE id = :id")
     fun borrarReceta(id: Long)
 
+    @Query("DELETE FROM Receta")
+    fun borrarTodasLasRecetas()
+
     @Query("SELECT * FROM Receta")
     fun obtenerTodasLasRecetas(): Flow<List<Receta>>
 
     @Query("SELECT * FROM Receta WHERE id = :id")
-    fun obtenerRecetaPorId(id: Long): Flow<Receta?>
+    fun obtenerRecetaPorId(id: Int): Receta?
 
     @Query("SELECT * FROM Receta LIMIT :limit OFFSET :offset")
     fun obtenerRecetasPaginadas(limit: Int, offset: Int): Flow<List<Receta>>

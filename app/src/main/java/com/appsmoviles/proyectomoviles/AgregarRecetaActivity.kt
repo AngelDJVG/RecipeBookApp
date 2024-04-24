@@ -7,12 +7,15 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 import com.appsmoviles.proyectomoviles.databinding.AgregarRecetaBinding
 import com.appsmoviles.proyectomoviles.db.AppDatabase
@@ -69,7 +72,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
             agregarIngrediente()
         }
 
-        binding.btnSeleccionarImagen.setOnClickListener{
+        binding.btnSeleccionarImagen.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
                     this,
                     android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -87,14 +90,15 @@ class AgregarRecetaActivity : AppCompatActivity() {
     }
 
     private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+            type = "image/*"
+        }
         startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
     }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -114,6 +118,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
             imageUri = data.data
             // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un ImageView
             binding.imageViewReceta.setImageURI(imageUri)
+            binding.imageViewReceta.scaleType= ImageView.ScaleType.FIT_XY
         }
     }
 
@@ -121,8 +126,19 @@ class AgregarRecetaActivity : AppCompatActivity() {
         val titulo = binding.txtEditTitle.text.toString()
         val tipo = obtenerTipoReceta()
         val preparacion = binding.txtEditPreparation.text.toString()
-        val tiempoPreparacion = binding.textTimePreparation.text.toString()
-        val tiempoCocinado = binding.textTimeCook.text.toString()
+        val tiempoPreparacion = binding.textTimePreparation.text.toString() +
+                if (binding.textTimePreparation.text.toString() == "1") {
+                    " " + binding.spinnerUnidadPreparacion.selectedItem.toString().removeSuffix("s")
+                } else {
+                    " " + binding.spinnerUnidadPreparacion.selectedItem.toString()
+                }
+
+        val tiempoCocinado = binding.textTimeCook.text.toString() +
+                if (binding.textTimeCook.text.toString() == "1") {
+                    " " + binding.spinnerUnidadCocinado.selectedItem.toString().removeSuffix("s")
+                } else {
+                    " " + binding.spinnerUnidadCocinado.selectedItem.toString()
+                }
         var imagen: String? = null
 
         if (imageUri != null) {
@@ -138,7 +154,12 @@ class AgregarRecetaActivity : AppCompatActivity() {
             imagen = imagen,
             listaIngredientes = ManejadorJson.convertirListaIngredientesAJson(listaIngredientes)
         )
-        GlobalScope.launch(Dispatchers.IO) {
+        agregarReceta(nuevaReceta)
+    }
+
+
+    private fun agregarReceta(nuevaReceta: Receta){
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 recetaDAO.insertarReceta(nuevaReceta)
                 mostrarMensajeExito()
@@ -147,6 +168,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun obtenerTipoReceta(): TipoReceta {
         val spinner = binding.spinnerTipoReceta
@@ -257,7 +279,7 @@ class AgregarRecetaActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_PERMISSION = 100
-        private const val REQUEST_CODE_PICK_IMAGE = 101
+        const val REQUEST_CODE_PICK_IMAGE = 101
     }
 
 }

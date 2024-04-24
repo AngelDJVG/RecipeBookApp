@@ -14,6 +14,7 @@ import com.appsmoviles.proyectomoviles.presentacion.CardReceta
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -61,6 +62,20 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnSiguientePaginado.setOnClickListener {
             avanzarPagina()
+
+        }
+
+        binding.btnEliminarRecetas.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    recetaDao.borrarTodasLasRecetas()
+                    cargarRecetas()
+                    numeroPaginado = 0
+                    actualizarBotonesPaginado()
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                }
+            }
 
         }
     }

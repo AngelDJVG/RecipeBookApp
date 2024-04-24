@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:columnCount="4"
+        android:columnCount="6"
         android:padding="12dp">
 
         <LinearLayout
@@ -42,6 +42,17 @@
                 android:textColor="@color/black"
                 android:textColorHint="#5C5C5C" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_eliminar_recetas"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_borrar" />
+
+
+
     </GridLayout>
 
     <ScrollView

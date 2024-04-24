@@ -22,6 +22,7 @@ import com.appsmoviles.proyectomoviles.VerGuardadosActivity
 import com.appsmoviles.proyectomoviles.databinding.ActivityMainBinding
 import com.appsmoviles.proyectomoviles.databinding.VerGuardadosBinding
 import com.appsmoviles.proyectomoviles.dominio.Receta
+import com.appsmoviles.proyectomoviles.utilidades.ManejadorImagenes
 import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
 import com.bumptech.glide.Glide
@@ -112,11 +113,10 @@ class CardReceta(
                     }
 
 
+
+                    val manejadorImagenes = ManejadorImagenes(context)
                     receta.imagen?.let { uriString ->
-                        val uri = Uri.parse(uriString)
-                        Glide.with(context)
-                            .load(uri)
-                            .into(imagen)
+                        manejadorImagenes.cargarImagenDesdeUri(uriString, imagen)
                     }
 
                     val btnGuardar = ImageButton(context).apply {
@@ -157,10 +157,10 @@ class CardReceta(
                     layoutContenedorCards.addView(card)
 
                     card.setOnClickListener {
+                        val recetaId = receta.id
                         val intent = Intent(context, VerDetallesRecetaActivity::class.java)
 
-                        intent.putExtra("receta", receta)
-
+                        intent.putExtra("recetaId", recetaId)
                         context.startActivity(intent)
                     }
                 }

@@ -1,43 +1,48 @@
 package com.appsmoviles.proyectomoviles
 
-import com.bumptech.glide.Glide
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 import com.appsmoviles.proyectomoviles.databinding.VerDetallesRecetaBinding
+import com.appsmoviles.proyectomoviles.db.AppDatabase
 import com.appsmoviles.proyectomoviles.dominio.Receta
+import com.appsmoviles.proyectomoviles.utilidades.ManejadorImagenes
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class VerDetallesRecetaActivity : AppCompatActivity() {
     private lateinit var binding: VerDetallesRecetaBinding
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private lateinit var recetaDao: RecetaDAO
+    private var imageUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VerDetallesRecetaBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val database = AppDatabase.getInstance(this)
+        recetaDao = database.recetaDAO()
 
         asignarListenerABotones()
-        val receta = intent.getParcelableExtra<Receta>("receta")
+        val recetaId = intent.getIntExtra("recetaId", -1)
 
-        if (receta != null) {
-            desplegarDatosReceta(receta)
-        } else {
-            runOnUiThread {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("Error")
-                builder.setMessage("Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.")
-                builder.setPositiveButton("OK") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                val dialog = builder.create()
-                dialog.show()
+        lifecycleScope.launch {
+            val receta = withContext(Dispatchers.IO) {
+                val database = AppDatabase.getInstance(applicationContext)
+                val recetaDao = database.recetaDAO()
+                recetaDao.obtenerRecetaPorId(recetaId)
+            }
+
+            if (receta != null) {
+                desplegarDatosReceta(receta)
+            } else {
+                showErrorDialog()
             }
         }
 
@@ -48,20 +53,22 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         val jsonIngredientes = receta.listaIngredientes
         val listaIngredientes = manejarListaIngredientes(jsonIngredientes)
 
-        println("DESPUES DE MANEJARLISTAINGREDIENTES $listaIngredientes")
 
 
-        if (!receta.imagen.isNullOrEmpty()) {
-            val imageView = findViewById<ImageView>(R.id.imagen_receta)
-            Glide.with(this).load(Uri.parse(receta.imagen)).into(imageView)
+        println("AQUI-DETALLES***************:   "+receta.imagen)
+
+
+        val manejadorImagenes = ManejadorImagenes(this)
+        receta.imagen?.let { uriString ->
+            manejadorImagenes.cargarImagenDesdeUri(uriString, binding.imagenReceta)
         }
 
-        findViewById<TextView>(R.id.nombre_receta).text = receta.titulo
-        findViewById<TextView>(R.id.tiempo_preparacion).text = "Preparación: ${receta.tiempoPreparacion}"
-        findViewById<TextView>(R.id.tiempo_cocinado).text = "Cocinado: ${receta.tiempoCocinado}"
-        findViewById<TextView>(R.id.tiempo_total).text = "Total: $tiempoTotal"
-        findViewById<TextView>(R.id.lista_ingredientes).text = listaIngredientes
-        findViewById<TextView>(R.id.pasos_preparacion).text = receta.preparacion
+        binding.nombreReceta.text = receta.titulo
+        binding.tiempoPreparacion.text = "Preparación: ${receta.tiempoPreparacion}"
+        binding.tiempoCocinado.text = "Cocinado: ${receta.tiempoCocinado}"
+        binding.tiempoTotal.text = "Total: $tiempoTotal"
+        binding.listaIngredientes.text = listaIngredientes
+        binding.pasosPreparacion.text = receta.preparacion
     }
 
     private fun asignarListenerABotones(){
@@ -82,24 +89,52 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         }
     }
 
-    private fun sumarTiempos(tiempo1: String, tiempo2: String): String {
-        val tiempo1Parts = tiempo1.split(":")
-        val tiempo2Parts = tiempo2.split(":")
 
-        if (tiempo1Parts.size != 2 || tiempo2Parts.size != 2) {
-            return "Formato de tiempo incorrecto"
+
+    private fun sumarTiempos(tiempo1: String, tiempo2: String): String {
+
+        fun convertirASegundos(tiempo: String): Int {
+            try {
+                val partes = tiempo.trim().split(" ")
+                if (partes.size != 2 || partes[0].toIntOrNull() == null) {
+                    throw IllegalArgumentException("Formato de tiempo no válido: $tiempo")
+                }
+                val numero = partes[0].toInt()
+                val unidad = partes[1]
+                return when (unidad) {
+                    "segundo", "segundos" -> numero
+                    "minuto", "minutos" -> numero * 60
+                    "hora", "horas" -> numero * 3600
+                    else -> throw IllegalArgumentException("Unidad de tiempo no válida: $unidad")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return -1 // Valor predeterminado en caso de error
+            }
         }
 
-        val (horas1, minutos1) = tiempo1Parts.map { it.toInt() }
-        val (horas2, minutos2) = tiempo2Parts.map { it.toInt() }
+        val totalSegundos = convertirASegundos(tiempo1) + convertirASegundos(tiempo2)
 
-        val horasTotales = horas1 + horas2
-        val minutosTotales = minutos1 + minutos2
+        val horas = totalSegundos / 3600
+        val minutos = (totalSegundos % 3600) / 60
+        val segundos = totalSegundos % 60
 
-        val horasExtra = minutosTotales / 60
-        val minutosRestantes = minutosTotales % 60
-
-        return String.format("%02d:%02d", horasTotales + horasExtra, minutosRestantes)
+        return buildString {
+            if (horas > 0) {
+                append("$horas hora")
+                if (horas != 1) append("s")
+                append(" ")
+            }
+            if (minutos > 0) {
+                append("$minutos minuto")
+                if (minutos != 1) append("s")
+                append(" ")
+            }
+            if (segundos > 0) {
+                append("$segundos segundo")
+                if (segundos != 1) append("s")
+            }
+        }
     }
 
     private fun manejarListaIngredientes(jsonIngredientes: String): String{
@@ -117,5 +152,21 @@ class VerDetallesRecetaActivity : AppCompatActivity() {
         }
 
         return textoIngredientes
+    }
+
+    private fun showErrorDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Error")
+        builder.setMessage("Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.")
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+            finish()
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+    companion object {
+        public const val REQUEST_CODE_PERMISSION = 100
+        public const val REQUEST_CODE_PICK_IMAGE = 101
     }
 }
