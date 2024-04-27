@@ -14,6 +14,7 @@ import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.presentacion.CardReceta
 import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
+import com.appsmoviles.proyectomoviles.utilidades.VinculadorSensorLuz
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,7 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
-class VerGuardadosActivity : AppCompatActivity(), RecetaGuardadaListener {
+class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
 
     private lateinit var binding: VerGuardadosBinding
     private lateinit var recetaManejador: RecetaManejador

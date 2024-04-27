@@ -13,11 +13,12 @@ import com.appsmoviles.proyectomoviles.db.AppDatabase
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorImagenes
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
+import com.appsmoviles.proyectomoviles.utilidades.VinculadorSensorLuz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class VerDetallesRecetaActivity : AppCompatActivity() {
+class VerDetallesRecetaActivity : VinculadorSensorLuz() {
     private lateinit var binding: VerDetallesRecetaBinding
     private lateinit var recetaDao: RecetaDAO
     private var imageUri: Uri? = null

@@ -2,7 +2,9 @@ package com.appsmoviles.proyectomoviles
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -20,8 +22,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.appsmoviles.proyectomoviles.utilidades.VinculadorSensorLuz
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : VinculadorSensorLuz() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var recetaDao: RecetaDAO
     private var limiteRecetasPaginado: Int = 5
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         cargarRecetas()
         actualizarBotonesPaginado()
         asignarListenerABotones()
+        otorgarPermisos()
     }
 
     private fun asignarListenerABotones() {
@@ -125,4 +129,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun otorgarPermisos(){
+        if (Settings.System.canWrite(this)) {
+            // Tu código para modificar la configuración aquí
+        } else {
+            // Iniciar la actividad para que el usuario otorgue permiso
+            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            intent.data = Uri.parse("package:" + packageName)
+            startActivity(intent)
+        }
+    }
+
 }

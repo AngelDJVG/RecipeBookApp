@@ -24,12 +24,13 @@ import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.enums.TipoReceta
 import com.appsmoviles.proyectomoviles.enums.Unidad
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
+import com.appsmoviles.proyectomoviles.utilidades.VinculadorSensorLuz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class AgregarRecetaActivity : AppCompatActivity() {
+class AgregarRecetaActivity : VinculadorSensorLuz() {
     private lateinit var binding: AgregarRecetaBinding
     private lateinit var recetaDAO: RecetaDAO
     private val listaIngredientes = mutableListOf<Ingrediente>()

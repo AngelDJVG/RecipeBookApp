@@ -25,7 +25,6 @@ import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorImagenes
 import com.appsmoviles.proyectomoviles.utilidades.RecetaGuardadaListener
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
-import com.bumptech.glide.Glide
 import kotlin.math.roundToInt
 
 class CardReceta(
