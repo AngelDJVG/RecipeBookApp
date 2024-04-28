@@ -2,6 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="#E86B7E" android:state_enabled="true" /> <!-- Color de fondo cuando está habilitado -->
 
-    <item android:color="#808080" android:state_enabled="false" /> <!-- Color de fondo cuando está deshabilitado -->
+    <item android:color="#FEDAD3" android:state_enabled="false" /> <!-- Color de fondo cuando está deshabilitado -->
 
 </selector>

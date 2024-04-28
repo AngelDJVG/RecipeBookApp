@@ -5,7 +5,7 @@
     android:id="@+id/agregar_receta"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/lightred"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/lightred"
             android:padding="1dp"
             android:paddingStart="15dp"
             android:text="&lt;"
@@ -370,7 +370,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/black"
+        android:background="@color/lightred2"
         android:layout_above="@id/layout_navegador"/>
 
     <LinearLayout
@@ -378,7 +378,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/botonpaginado"
         android:orientation="horizontal"
         android:weightSum="3">
 
@@ -388,7 +388,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@color/botonpaginado"
             android:text="Inicio"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -403,7 +403,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@color/botonpaginado"
             android:text="Añadir"
             android:textColor="@color/black"
             android:textSize="10sp"
@@ -418,7 +418,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@color/botonpaginado"
             android:text="Guardado"
             android:textColor="@color/black"
             android:textSize="10sp"

@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/lightred"
     android:padding="5dp">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/lightred"
             android:padding="1dp"
             android:paddingStart="15dp"
             android:text="&lt;"
@@ -50,11 +50,12 @@
         android:layout_height="match_parent"
         android:layout_below="@id/header"
         android:layout_marginBottom="67dp"
-        android:background="@color/white">
+        android:background="@color/lightred">
 
         <LinearLayout
             android:id="@+id/layout_general"
             android:layout_width="match_parent"
+            android:background="@color/lightred"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
@@ -198,12 +199,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black" />
+            android:background="@color/lightred2" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/botonpaginado"
             android:weightSum="3">
 
             <com.google.android.material.button.MaterialButton
@@ -217,7 +219,7 @@
                 app:icon="@drawable/ic_casa"
                 app:iconSize="24dp"
                 app:iconPadding="8dp"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:textColor="@color/black"
                 app:iconTint="#000000"
                 />
@@ -233,7 +235,7 @@
                 app:icon="@drawable/ic_plus"
                 app:iconSize="24dp"
                 app:iconPadding="8dp"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:textColor="@color/black"
                 app:iconTint="#000000"
                 />
@@ -249,7 +251,7 @@
                 app:icon="@drawable/ic_guardado"
                 app:iconSize="24dp"
                 app:iconPadding="8dp"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:textColor="@color/black"
                 app:iconTint="#000000"
                 />

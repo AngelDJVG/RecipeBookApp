@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/lightred"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -10,9 +10,10 @@
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/lightred"
         android:columnCount="6"
-        android:padding="12dp">
+        android:padding="12dp"
+        >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -64,7 +65,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/lightred">
 
             <LinearLayout
                 android:id="@+id/layout_contenedor_cards"
@@ -132,12 +134,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black" />
+            android:background="@color/lightred2" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/botonpaginado"
             android:weightSum="3">
 
             <com.google.android.material.button.MaterialButton
@@ -145,7 +148,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:text="Inicio"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -160,7 +163,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:text="Añadir"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -175,7 +178,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/botonpaginado"
                 android:text="Guardado"
                 android:textColor="@color/black"
                 android:textSize="10sp"
