@@ -72,24 +72,13 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
         }
 
         binding.btnSeleccionarImagen.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_CODE_PERMISSION
-                )
-            } else {
-                abrirGaleria()
-            }
+            abrirGaleria()
         }
     }
 
     private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
             type = "image/*"
         }
         startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
@@ -113,9 +102,11 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            // Obtener la URI de la imagen seleccionada
             imageUri = data.data
-            // Aquí puedes hacer lo que quieras con la imagen seleccionada, por ejemplo, mostrarla en un ImageView
+
+            val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            contentResolver.takePersistableUriPermission(imageUri!!, takeFlags)
+
             binding.imageViewReceta.setImageURI(imageUri)
             binding.imageViewReceta.scaleType= ImageView.ScaleType.FIT_XY
         }

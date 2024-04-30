@@ -54,11 +54,6 @@ class VerDetallesRecetaActivity : VinculadorSensorLuz() {
         val jsonIngredientes = receta.listaIngredientes
         val listaIngredientes = manejarListaIngredientes(jsonIngredientes)
 
-
-
-        println("AQUI-DETALLES***************:   "+receta.imagen)
-
-
         val manejadorImagenes = ManejadorImagenes(this)
         receta.imagen?.let { uriString ->
             manejadorImagenes.cargarImagenDesdeUri(uriString, binding.imagenReceta)
