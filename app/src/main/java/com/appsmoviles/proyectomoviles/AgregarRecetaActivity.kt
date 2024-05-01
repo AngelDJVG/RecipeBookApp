@@ -1,6 +1,7 @@
 package com.appsmoviles.proyectomoviles
 
 
+import ValidadorRecetas
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -35,8 +36,10 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
     private lateinit var recetaDAO: RecetaDAO
     private val listaIngredientes = mutableListOf<Ingrediente>()
     private var imageUri: Uri? = null
+    private lateinit var formValidator: ValidadorRecetas
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        formValidator = ValidadorRecetas(this)
         super.onCreate(savedInstanceState)
         binding = AgregarRecetaBinding.inflate(layoutInflater)
         val view = binding.root
@@ -130,23 +133,46 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
                     " " + binding.spinnerUnidadCocinado.selectedItem.toString()
                 }
         var imagen: String? = null
-
+        var mensaje: String? = null
         if (imageUri != null) {
             imagen = imageUri.toString()
         }
+        if (formValidator.validateRecipeForm(
+                titulo,
+                tipo,
+                preparacion,
+                tiempoPreparacion,
+                tiempoCocinado
+            ).isBlank()
+        ) {
+            if (imageUri != null) {
+                imagen = imageUri.toString()
+            }
+            val nuevaReceta = Receta(
+                titulo = titulo,
+                tipo = tipo,
+                preparacion = preparacion,
+                tiempoPreparacion = tiempoPreparacion,
+                tiempoCocinado = tiempoCocinado,
+                imagen = imagen,
+                listaIngredientes = ManejadorJson.convertirListaIngredientesAJson(listaIngredientes)
+            )
+            agregarReceta(nuevaReceta)
+        } else {
+            mensaje = formValidator.validateRecipeForm(
+                titulo,
+                tipo,
+                preparacion,
+                tiempoPreparacion,
+                tiempoCocinado
+            )
+            // Mostrar mensaje de error si falta completar datos
+            if (mensaje != null) {
+                mostrarMensajeFaltaDatos(mensaje)
+            }
+        }
 
-        val nuevaReceta = Receta(
-            titulo = titulo,
-            tipo = tipo,
-            preparacion = preparacion,
-            tiempoPreparacion = tiempoPreparacion,
-            tiempoCocinado = tiempoCocinado,
-            imagen = imagen,
-            listaIngredientes = ManejadorJson.convertirListaIngredientesAJson(listaIngredientes)
-        )
-        agregarReceta(nuevaReceta)
     }
-
 
     private fun agregarReceta(nuevaReceta: Receta){
         lifecycleScope.launch(Dispatchers.IO) {
@@ -246,14 +272,13 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
         }
     }
 
-    private fun mostrarMensajeFaltaDatos() {
+    private fun mostrarMensajeFaltaDatos(mensaje: String) {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Faltan datos")
-            builder.setMessage("Por favor, completa todos los campos antes de continuar.")
+            builder.setMessage(mensaje)
             builder.setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
-                volverAPantallaPrincipal()
             }
             val dialog = builder.create()
             dialog.show()

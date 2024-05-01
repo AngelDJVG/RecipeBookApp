@@ -14,4 +14,9 @@
         <item>Postre</item>
         <item>Comida</item>
     </string-array>
+    <string name="error_title_required">Debe ingresar un título</string>
+    <string name="error_preparation_required">Debe ingresar la preparación</string>
+    <string name="error_preparation_time_required">Debe ingresar el tiempo de preparación</string>
+    <string name="error_cooking_time_required">Debe ingresar el tiempo de cocinado</string>
+
 </resources>
