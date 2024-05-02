@@ -6,16 +6,11 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 import com.appsmoviles.proyectomoviles.databinding.AgregarRecetaBinding
@@ -27,7 +22,6 @@ import com.appsmoviles.proyectomoviles.enums.Unidad
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
 import com.appsmoviles.proyectomoviles.utilidades.VinculadorSensorLuz
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -36,10 +30,8 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
     private lateinit var recetaDAO: RecetaDAO
     private val listaIngredientes = mutableListOf<Ingrediente>()
     private var imageUri: Uri? = null
-    private lateinit var formValidator: ValidadorRecetas
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        formValidator = ValidadorRecetas(this)
         super.onCreate(savedInstanceState)
         binding = AgregarRecetaBinding.inflate(layoutInflater)
         val view = binding.root
@@ -72,11 +64,17 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
 
         binding.btnAddIngrediente.setOnClickListener {
             agregarIngrediente()
+            limpiarFormIngredientes()
         }
 
         binding.btnSeleccionarImagen.setOnClickListener {
             abrirGaleria()
         }
+    }
+
+    private fun limpiarFormIngredientes(){
+        binding.txtNombreIngrediente.text.clear()
+        binding.txtCantidadIngredientes.text.clear()
     }
 
     private fun abrirGaleria() {
@@ -116,62 +114,66 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
     }
 
     private fun guardarReceta() {
+        val validador = ValidadorRecetas()
+        val msgErrores = mutableListOf<String?>()
+
         val titulo = binding.txtEditTitle.text.toString()
+        validador.validarTitulo(titulo)?.let { msgErrores.add(it) }
+
         val tipo = obtenerTipoReceta()
+        validador.validarTipo(tipo)?.let { msgErrores.add(it) }
+
+
+        validador.validarIngredientes(listaIngredientes)?.let{msgErrores.add(it)}
+
+
         val preparacion = binding.txtEditPreparation.text.toString()
-        val tiempoPreparacion = binding.textTimePreparation.text.toString() +
-                if (binding.textTimePreparation.text.toString() == "1") {
-                    " " + binding.spinnerUnidadPreparacion.selectedItem.toString().removeSuffix("s")
-                } else {
-                    " " + binding.spinnerUnidadPreparacion.selectedItem.toString()
-                }
+        validador.validarPreparacion(preparacion)?.let { msgErrores.add(it) }
 
-        val tiempoCocinado = binding.textTimeCook.text.toString() +
-                if (binding.textTimeCook.text.toString() == "1") {
-                    " " + binding.spinnerUnidadCocinado.selectedItem.toString().removeSuffix("s")
-                } else {
-                    " " + binding.spinnerUnidadCocinado.selectedItem.toString()
-                }
-        var imagen: String? = null
-        var mensaje: String? = null
-        if (imageUri != null) {
-            imagen = imageUri.toString()
-        }
-        if (formValidator.validateRecipeForm(
-                titulo,
-                tipo,
-                preparacion,
-                tiempoPreparacion,
-                tiempoCocinado
-            ).isBlank()
-        ) {
-            if (imageUri != null) {
-                imagen = imageUri.toString()
-            }
-            val nuevaReceta = Receta(
-                titulo = titulo,
-                tipo = tipo,
-                preparacion = preparacion,
-                tiempoPreparacion = tiempoPreparacion,
-                tiempoCocinado = tiempoCocinado,
-                imagen = imagen,
-                listaIngredientes = ManejadorJson.convertirListaIngredientesAJson(listaIngredientes)
-            )
-            agregarReceta(nuevaReceta)
-        } else {
-            mensaje = formValidator.validateRecipeForm(
-                titulo,
-                tipo,
-                preparacion,
-                tiempoPreparacion,
-                tiempoCocinado
-            )
-            // Mostrar mensaje de error si falta completar datos
-            if (mensaje != null) {
-                mostrarMensajeFaltaDatos(mensaje)
-            }
-        }
+        val tiempoPreparacion = binding.textTimePreparation.text.toString()
+        val unidadPreparacion = binding.spinnerUnidadPreparacion.selectedItem.toString()
+        validador.validarTiempoPreparacion(tiempoPreparacion, unidadPreparacion)?.let { msgErrores.add(it) }
 
+        val totalPreparacion = "$tiempoPreparacion $unidadPreparacion"
+
+        val tiempoCocinado = binding.textTimeCook.text.toString()
+        val unidadCocinado = binding.spinnerUnidadCocinado.selectedItem.toString()
+        validador.validarTiempoCocinado(tiempoCocinado, unidadCocinado)?.let { msgErrores.add(it) }
+
+        val totalCocinado = "$tiempoCocinado $unidadCocinado"
+
+        val imagen = imageUri.toString()
+        println(imagen)
+        validador.validarImagen(imagen)?.let { msgErrores.add(it) }
+
+        if (msgErrores.isNotEmpty()) {
+            mostrarMensajeFaltaDatos(msgErrores)
+            return
+        }
+        var ingredienteJSON = ManejadorJson.convertirListaIngredientesAJson(listaIngredientes)
+        val recetaAGuardar = extraerDatos(titulo, tipo, preparacion, totalPreparacion, totalCocinado,imagen, ingredienteJSON)
+        agregarReceta(recetaAGuardar)
+    }
+
+    private fun extraerDatos(
+        titulo: String,
+        tipo: TipoReceta,
+        preparacion: String,
+        tiempoPreparacion: String,
+        tiempoCocinado: String,
+        imagen: String?,
+        ingredientes: String
+    ): Receta {
+
+        return Receta(
+            titulo = titulo,
+            tipo = tipo,
+            preparacion = preparacion,
+            tiempoPreparacion = tiempoPreparacion,
+            tiempoCocinado = tiempoCocinado,
+            imagen = imagen,
+            listaIngredientes = ingredientes
+        )
     }
 
     private fun agregarReceta(nuevaReceta: Receta){
@@ -193,15 +195,28 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
     }
 
     private fun agregarIngrediente() {
+
+        val validador = ValidadorRecetas()
+        val msgErrores = mutableListOf<String?>()
+
         val nombre = binding.txtNombreIngrediente.text.toString()
-        val cantidad = binding.txtCantidadIngredientes.text.toString().toDoubleOrNull() ?: 0.0
+        validador.validarTXTNombre(nombre)?.let { msgErrores.add(it) }
+
+        val cantidad = binding.txtCantidadIngredientes.text.toString()
         val unidadString = binding.spinnerUnidad.selectedItem.toString()
         val unidad = when (unidadString) {
             "PZ" -> Unidad.PZ
             "KG" -> Unidad.KG
             else -> Unidad.PZ
         }
-        val nuevoIngrediente = Ingrediente(nombre, cantidad, unidad)
+
+        validador.validarTXTCantidad(cantidad,unidad.toString())?.let { msgErrores.add(it) }
+
+        if (msgErrores.isNotEmpty()) {
+            mostrarMensajeFaltaDatos(msgErrores)
+            return
+        }
+        val nuevoIngrediente = Ingrediente(nombre, cantidad.toDoubleOrNull() ?: 0.0, unidad)
         actualizarLayoutIngredientes(nuevoIngrediente)
     }
 
@@ -272,11 +287,12 @@ class AgregarRecetaActivity : VinculadorSensorLuz() {
         }
     }
 
-    private fun mostrarMensajeFaltaDatos(mensaje: String) {
+    private fun mostrarMensajeFaltaDatos(msgErrores: List<String?>) {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Faltan datos")
-            builder.setMessage(mensaje)
+            val errorMessages = msgErrores.filterNotNull().joinToString("\n")
+            builder.setMessage(errorMessages)
             builder.setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }

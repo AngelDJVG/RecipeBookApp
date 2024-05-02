@@ -1,72 +1,93 @@
-import android.content.Context
-import android.text.TextUtils
-import android.widget.EditText
-import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
-import androidx.core.view.isEmpty
-import androidx.core.view.isNotEmpty
+import android.net.Uri
 import com.appsmoviles.proyectomoviles.R
+import com.appsmoviles.proyectomoviles.dominio.Ingrediente
 import com.appsmoviles.proyectomoviles.enums.TipoReceta
 
-class ValidadorRecetas(private val activity: AppCompatActivity) {
+class ValidadorRecetas() {
 
-    fun validateRecipeForm(
-        tituloEditText: String,
-        tipoRecetaSpinner: TipoReceta,
-        preparacionEditText: String,
-        tiempoPreparacionEditText: String,
-        tiempoCocinadoEditText: String
-    ): String {
-        val errores = StringBuilder()
-
-        val tituloError = validateTitle(tituloEditText)
-        if (tituloError.isNotEmpty()) {
-            errores.append(tituloError).append("\n")
-        }
-
-        val preparacionError = validatePreparation(preparacionEditText)
-        if (preparacionError.isNotEmpty()) {
-            errores.append(preparacionError).append("\n")
-        }
-
-        val tiempoPreparacionError = validateTime(tiempoPreparacionEditText)
-        if (tiempoPreparacionError.isNotEmpty()) {
-            errores.append(tiempoPreparacionError).append("\n")
-        }
-
-        val tiempoCocinadoError = validateTime(tiempoCocinadoEditText)
-        if (tiempoCocinadoError.isNotEmpty()) {
-            errores.append(tiempoCocinadoError).append("\n")
-        }
-
-        return errores.toString().trim()
-    }
-
-    private fun validateTitle(tituloEditText: String): String {
-        val titulo = tituloEditText
-        return if (titulo.isNotBlank()) {
-            ""
+    fun validarTitulo(titulo: String): String? {
+        return if (titulo.isEmpty()) {
+            "El título de la receta no puede estar vacío."
         } else {
-            activity.getString(R.string.error_title_required)
+            null
         }
     }
 
-    private fun validatePreparation(preparacionEditText: String): String {
-        val preparacion = preparacionEditText
-        return if (preparacion.isNotBlank()) {
-            ""
+    fun validarTipo(tipo: TipoReceta): String? {
+        return if (tipo.toString().isNullOrEmpty()) {
+            "Debe seleccionar un tipo de receta."
         } else {
-            activity.getString(R.string.error_preparation_required)
+            null
         }
     }
 
-    private fun validateTime(tiempoEditText: String): String {
-        val tiempo = tiempoEditText
-        return if (tiempo.isNotBlank()) {
-            ""
+    fun validarPreparacion(preparacion: String): String? {
+        return if (preparacion.isEmpty()) {
+            "La descripción de la preparación no puede estar vacía."
         } else {
-            activity.getString(R.string.error_preparation_time_required)
+            null
+        }
+    }
+
+    fun validarTiempoPreparacion(tiempo: String, unidad: String): String? {
+        return if (tiempo.isEmpty()) {
+            "El tiempo de preparación de no puede estar vacío."
+        } else if (!tiempo.matches(Regex("\\d+"))) {
+            "El tiempo de preparación debe ser un número válido."
+        } else if (unidad.isEmpty()) {
+            "Debe seleccionar una unidad de tiempo."
+        } else {
+            null
+        }
+    }
+
+    fun validarTiempoCocinado(tiempo: String, unidad: String): String? {
+        return if (tiempo.isEmpty()) {
+            "El tiempo de cocinado no puede estar vacío."
+        } else if (!tiempo.matches(Regex("\\d+"))) {
+            "El tiempo de cocinado debe ser un número válido."
+        } else if (unidad.isEmpty()) {
+            "Debe seleccionar una unidad de tiempo."
+        } else {
+            null
+        }
+    }
+
+    fun validarImagen(imagenURI: String?): String? {
+        return if (imagenURI == "null" || imagenURI.isNullOrEmpty() ) {
+            "Debes elegir una imagen."
+        } else {
+            null
+        }
+    }
+
+    fun validarIngredientes(ingredientes: List<Ingrediente>): String? {
+        return if (ingredientes.isEmpty()) {
+            "Debe haber minimo un ingrediente"
+
+        } else {
+            null
+        }
+        println("POR QUE VVRG" + ingredientes.isEmpty())
+    }
+
+    fun validarTXTNombre(preparacion: String): String? {
+        return if (preparacion.isEmpty()) {
+            "El nombre del ingrediente no puede estar vacío."
+        } else {
+            null
+        }
+    }
+
+    fun validarTXTCantidad(preparacion: String, unidad: String): String? {
+        return if (preparacion.isEmpty()) {
+            "La cantidad del ingrediente no puede estar vacío."
+        } else if (!preparacion.matches(Regex("\\d+"))) {
+            "La cantidad debe de ser un número válido."
+        } else if (unidad.isEmpty()) {
+            "Debe seleccionar una unidad de medida."
+        }  else {
+            null
         }
     }
 }
