@@ -54,10 +54,16 @@ class RecetaManejador(private val context: Context) {
         val endIndex = minOf(startIndex + itemsPerPage, recetasGuardadas.size)
         return recetasGuardadas.subList(startIndex, endIndex)
     }
-
     fun borrarTodosLosRegistros() {
         val editor = sharedPreferences.edit()
         editor.remove(RECETAS_GUARDADAS_KEY)
         editor.apply()
     }
+    fun buscarRecetas(query: String): List<Receta> {
+        val recetasGuardadas = getRecetasGuardadas()
+        return recetasGuardadas.filter { receta ->
+            receta.titulo.contains(query, ignoreCase = true)
+        }
+    }
+
 }

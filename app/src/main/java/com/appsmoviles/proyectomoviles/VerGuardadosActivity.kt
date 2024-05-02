@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,7 +31,8 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
     private lateinit var binding: VerGuardadosBinding
     private lateinit var recetaManejador: RecetaManejador
     private var limiteRecetasPaginado: Int = 5
-    private var numeroPaginado: Int = 0
+    private var numeroPaginado: Int = 1
+    private var textoBusqueda : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +41,33 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
         recetaManejador = RecetaManejador(this)
         mostrarRecetasGuardadas()
         asignarListenerABotones()
+        actualizarBotonesPaginado()
+        asignarListenerAEditText()
+    }
+    private fun asignarListenerAEditText() {
+        binding.buscadorEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                textoBusqueda = s.toString()
+                cargarRecetas()
+            }
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // No es necesario implementar este método
+            }
+        })
+
+        // Resto de tu código...
+    }
+    private fun cargarRecetas() {
+        val textoBusquedaTrimmed = textoBusqueda.trim()
+        if (textoBusquedaTrimmed.isEmpty()) {
+            mostrarRecetasGuardadas()
+        } else {
+            mostrarRecetasBusqueda(textoBusquedaTrimmed)
+        }
     }
 
     private fun asignarListenerABotones() {
@@ -66,26 +95,25 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
     }
 
     private fun avanzarPagina() {
-        numeroPaginado += 5
-        cargarRecetasPreferences()
+        numeroPaginado += 1
+        mostrarRecetasGuardadas()
         actualizarBotonesPaginado()
     }
 
     private fun retrocederPagina() {
-        if (numeroPaginado > 0) {
-            numeroPaginado -= 5
-            if (numeroPaginado < 0) {
-                numeroPaginado = 0
+        if (numeroPaginado > 1) {
+            numeroPaginado -= 1
+            if (numeroPaginado < 1) {
+                numeroPaginado = 1
             }
-            cargarRecetasPreferences()
+            mostrarRecetasGuardadas()
             actualizarBotonesPaginado()
         }
     }
+    private fun mostrarRecetasBusqueda(Busqueda: String) {
+        val recetasGuardadas = recetaManejador.buscarRecetas(Busqueda)
 
-    private fun mostrarRecetasGuardadas() {
-        val recetasGuardadas = recetaManejador.getRecetasGuardadas()
-
-        val cardReceta = CardReceta(this, recetasGuardadas.toList(), listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
+        val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
         cardReceta.crearCardsRecetas()
 
         if (recetasGuardadas.isEmpty()) {
@@ -101,6 +129,26 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
             binding.layoutContenedorCards.addView(noRecetasText)
         }
     }
+    private fun mostrarRecetasGuardadas() {
+        val recetasGuardadas = recetaManejador.getRecetasGuardadasPaginado(limiteRecetasPaginado, numeroPaginado)
+
+        val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
+        cardReceta.crearCardsRecetas()
+
+        if (recetasGuardadas.isEmpty()) {
+            val noRecetasText = TextView(this).apply {
+                text = "No hay recetas guardadas."
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = 16.dpToPx(context)
+                }
+            }
+            binding.layoutContenedorCards.addView(noRecetasText)
+        }
+    }
+
 
     private fun Int.dpToPx(context: Context): Int {
         return TypedValue.applyDimension(
@@ -120,26 +168,22 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
     }
 
     private fun actualizarBotonesPaginado() {
-        //METER LO DEL SHARED
-
-        /*
-
         lifecycleScope.launch(Dispatchers.IO) {
-            val totalRecetas = recetaDao.obtenerNumeroTotalRecetas().first() ?: 0
-            val hayRecetasAnteriores = numeroPaginado > 0
-            val hayRecetasSiguientes = numeroPaginado + limiteRecetasPaginado < totalRecetas
+            val totalRecetas = recetaManejador.getRecetasGuardadas().size
 
-            val paginaActual = numeroPaginado / limiteRecetasPaginado + 1
-            val paginasTotales = (totalRecetas + limiteRecetasPaginado - 1) / limiteRecetasPaginado
+
+            val paginaActual = numeroPaginado
+            var paginasTotales = (totalRecetas + limiteRecetasPaginado - 1) / limiteRecetasPaginado
+
+            val hayRecetasAnteriores = paginaActual > 1
+            val hayRecetasSiguientes = paginaActual < paginasTotales
 
             withContext(Dispatchers.Main) {
                 binding.btnAnteriorPaginado.isEnabled = hayRecetasAnteriores
                 binding.btnSiguientePaginado.isEnabled = hayRecetasSiguientes
-
+                if(paginasTotales == 0) paginasTotales = 1
                 binding.textoPaginado.text = "$paginaActual/$paginasTotales"
             }
         }
-         */
-
     }
 }
