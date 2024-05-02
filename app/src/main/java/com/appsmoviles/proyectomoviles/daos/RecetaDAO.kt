@@ -24,6 +24,9 @@ interface RecetaDAO {
     @Query("SELECT * FROM Receta WHERE id = :id")
     fun obtenerRecetaPorId(id: Int): Receta?
 
+    @Query("SELECT * FROM Receta WHERE titulo LIKE '%' || :titulo || '%' LIMIT :limit OFFSET :offset")
+    fun buscarRecetasPaginadasPorNombre(titulo: String, limit: Int, offset: Int): Flow<List<Receta>>
+
     @Query("SELECT * FROM Receta LIMIT :limit OFFSET :offset")
     fun obtenerRecetasPaginadas(limit: Int, offset: Int): Flow<List<Receta>>
 

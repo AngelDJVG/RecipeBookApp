@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +14,7 @@ import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 
 import com.appsmoviles.proyectomoviles.databinding.ActivityMainBinding
 import com.appsmoviles.proyectomoviles.db.AppDatabase
+import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.appsmoviles.proyectomoviles.presentacion.CardReceta
 import com.appsmoviles.proyectomoviles.utilidades.ManejadorJson
 import com.appsmoviles.proyectomoviles.utilidades.RecetaManejador
@@ -29,6 +32,7 @@ class MainActivity : VinculadorSensorLuz() {
     private lateinit var recetaDao: RecetaDAO
     private var limiteRecetasPaginado: Int = 5
     private var numeroPaginado: Int = 0
+    private var textoBusqueda: String = ""
 
 
 
@@ -46,6 +50,7 @@ class MainActivity : VinculadorSensorLuz() {
         recetaDao = database.recetaDAO()
         cargarRecetas()
         actualizarBotonesPaginado()
+        asignarListenerAEditText()
         asignarListenerABotones()
         otorgarPermisos()
     }
@@ -84,6 +89,24 @@ class MainActivity : VinculadorSensorLuz() {
         }
     }
 
+    private fun asignarListenerAEditText() {
+        binding.buscadorEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                textoBusqueda = s.toString()
+                cargarRecetas()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // No es necesario implementar este método
+            }
+        })
+
+        // Resto de tu código...
+    }
+
     private fun avanzarPagina() {
         numeroPaginado += 5
         cargarRecetas()
@@ -102,14 +125,34 @@ class MainActivity : VinculadorSensorLuz() {
     }
 
     private fun cargarRecetas() {
+        val textoBusquedaTrimmed = textoBusqueda.trim()
+        if (textoBusquedaTrimmed.isEmpty()) {
+            cargarTodasLasRecetasPaginadas()
+        } else {
+            cargarRecetasFiltradasPorNombre(textoBusquedaTrimmed)
+        }
+    }
+
+    private fun cargarTodasLasRecetasPaginadas() {
         recetaDao.obtenerRecetasPaginadas(limiteRecetasPaginado, numeroPaginado)
             .onEach { recipes ->
-                CardReceta(
-                    this,
-                    recipes,
-                    listOf(CardReceta.BindingWrapper(mainBinding = binding))
-                ).crearCardsRecetas()
+                mostrarRecetas(recipes)
             }.launchIn(lifecycleScope)
+    }
+
+    private fun cargarRecetasFiltradasPorNombre(nombre: String) {
+        recetaDao.buscarRecetasPaginadasPorNombre(nombre, limiteRecetasPaginado, numeroPaginado)
+            .onEach { recipes ->
+                mostrarRecetas(recipes)
+            }.launchIn(lifecycleScope)
+    }
+
+    private fun mostrarRecetas(recipes: List<Receta>) {
+        CardReceta(
+            this,
+            recipes,
+            listOf(CardReceta.BindingWrapper(mainBinding = binding))
+        ).crearCardsRecetas()
     }
 
     private fun actualizarBotonesPaginado() {
