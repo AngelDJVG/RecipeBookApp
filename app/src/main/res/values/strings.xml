@@ -14,6 +14,11 @@
         <item>Postre</item>
         <item>Comida</item>
     </string-array>
+    <string-array name="filtros">
+        <item>Nuevas</item>
+        <item>Viejas</item>
+        <item>Titulo</item>
+    </string-array>
     <string name="error_title_required">Debe ingresar un título</string>
     <string name="error_preparation_required">Debe ingresar la preparación</string>
     <string name="error_preparation_time_required">Debe ingresar el tiempo de preparación</string>

@@ -44,16 +44,28 @@ class RecetaManejador(private val context: Context) {
         } ?: emptySet()
     }
 
-    fun getRecetasGuardadasPaginado(itemsPerPage: Int, pageNumber: Int): List<Receta> {
+    fun getRecetasGuardadasPaginado(itemsPerPage: Int, pageNumber: Int, filtro: String): List<Receta> {
         val json = sharedPreferences.getString(RECETAS_GUARDADAS_KEY, null)
         val recetasGuardadas = json?.let {
             gson.fromJson<List<Receta>>(it, object : TypeToken<List<Receta>>() {}.type)
         } ?: emptyList()
 
+        val recetasFiltradas = when (filtro) {
+            "Titulo" -> recetasGuardadas.sortedBy { it.titulo }
+            "Viejas" -> recetasGuardadas.sortedWith(
+                compareBy(
+                    { it.id }
+                )
+            )
+            else -> recetasGuardadas
+        }
+
         val startIndex = (pageNumber - 1) * itemsPerPage
-        val endIndex = minOf(startIndex + itemsPerPage, recetasGuardadas.size)
-        return recetasGuardadas.subList(startIndex, endIndex)
+        val endIndex = minOf(startIndex + itemsPerPage, recetasFiltradas.size)
+        return recetasFiltradas.subList(startIndex, endIndex)
     }
+
+
     fun borrarTodosLosRegistros() {
         val editor = sharedPreferences.edit()
         editor.remove(RECETAS_GUARDADAS_KEY)

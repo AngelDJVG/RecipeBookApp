@@ -105,7 +105,7 @@ class VerDetallesRecetaActivity : VinculadorSensorLuz() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                return -1 // Valor predeterminado en caso de error
+                return -1
             }
         }
 

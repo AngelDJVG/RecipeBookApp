@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +36,7 @@ class MainActivity : VinculadorSensorLuz() {
     private var limiteRecetasPaginado: Int = 5
     private var numeroPaginado: Int = 0
     private var textoBusqueda: String = ""
-
+    private var opcion: String = "Nuevas"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,18 +44,15 @@ class MainActivity : VinculadorSensorLuz() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //val recetaManejador = RecetaManejador(this)
-        //recetaManejador.borrarTodosLosRegistros()
-        //deleteDatabase("db_recetas")
 
 
         val database = AppDatabase.getInstance(this)
         recetaDao = database.recetaDAO()
-        cargarRecetas()
         actualizarBotonesPaginado()
         asignarListenerAEditText()
         asignarListenerABotones()
         otorgarPermisos()
+        configurarComboBoxFiltro()
     }
 
     private fun asignarListenerABotones() {
@@ -78,7 +78,7 @@ class MainActivity : VinculadorSensorLuz() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     recetaDao.borrarTodasLasRecetas()
-                    cargarRecetas()
+                    cargarRecetas(opcion)
                     numeroPaginado = 0
                     actualizarBotonesPaginado()
                 } catch (ex: Exception) {
@@ -93,23 +93,21 @@ class MainActivity : VinculadorSensorLuz() {
         binding.buscadorEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 textoBusqueda = s.toString()
-                cargarRecetas()
+                cargarRecetas(opcion)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // No es necesario implementar este método
             }
         })
 
-        // Resto de tu código...
     }
 
     private fun avanzarPagina() {
         numeroPaginado += 5
-        cargarRecetas()
+        cargarRecetas(opcion)
         actualizarBotonesPaginado()
     }
 
@@ -119,25 +117,42 @@ class MainActivity : VinculadorSensorLuz() {
             if (numeroPaginado < 0) {
                 numeroPaginado = 0
             }
-            cargarRecetas()
+            cargarRecetas(opcion)
             actualizarBotonesPaginado()
         }
     }
 
-    private fun cargarRecetas() {
+    private fun cargarRecetas(filtro: String) {
         val textoBusquedaTrimmed = textoBusqueda.trim()
         if (textoBusquedaTrimmed.isEmpty()) {
-            cargarTodasLasRecetasPaginadas()
+            cargarTodasLasRecetasPaginadas(filtro)
         } else {
             cargarRecetasFiltradasPorNombre(textoBusquedaTrimmed)
         }
     }
 
-    private fun cargarTodasLasRecetasPaginadas() {
-        recetaDao.obtenerRecetasPaginadas(limiteRecetasPaginado, numeroPaginado)
-            .onEach { recipes ->
-                mostrarRecetas(recipes)
-            }.launchIn(lifecycleScope)
+    private fun cargarTodasLasRecetasPaginadas(filtro: String) {
+        if(filtro == "Nuevas")
+        {
+            recetaDao.obtenerRecetasPaginadasNuevas(limiteRecetasPaginado, numeroPaginado)
+                .onEach { recipes ->
+                    mostrarRecetas(recipes)
+                }.launchIn(lifecycleScope)
+        }
+        if(filtro == "Viejas")
+        {
+            recetaDao.obtenerRecetasPaginadasViejas(limiteRecetasPaginado, numeroPaginado)
+                .onEach { recipes ->
+                    mostrarRecetas(recipes)
+                }.launchIn(lifecycleScope)
+        }
+        if(filtro == "Titulo")
+        {
+            recetaDao.obtenerRecetasPaginadasTitulo(limiteRecetasPaginado, numeroPaginado)
+                .onEach { recipes ->
+                    mostrarRecetas(recipes)
+                }.launchIn(lifecycleScope)
+        }
     }
 
     private fun cargarRecetasFiltradasPorNombre(nombre: String) {
@@ -174,13 +189,40 @@ class MainActivity : VinculadorSensorLuz() {
     }
     private fun otorgarPermisos(){
         if (Settings.System.canWrite(this)) {
-            // Tu código para modificar la configuración aquí
         } else {
-            // Iniciar la actividad para que el usuario otorgue permiso
             val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             intent.data = Uri.parse("package:" + packageName)
             startActivity(intent)
         }
     }
+    private fun configurarComboBoxFiltro() {
+        val opcionesFiltro = resources.getStringArray(R.array.filtros)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesFiltro)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.filtroSpinner.adapter = adapter
+
+        binding.filtroSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val opcionSeleccionada = opcionesFiltro[position]
+                opcion = opcionSeleccionada
+                when (opcionSeleccionada) {
+                    "Nuevas" -> {
+                        cargarRecetas("Nuevas")
+                    }
+                    "Viejas" -> {
+                        cargarRecetas("Viejas")
+                    }
+                    "Titulo" -> {
+                        cargarRecetas("Titulo")
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
 
 }

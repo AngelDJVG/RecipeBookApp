@@ -27,9 +27,14 @@ interface RecetaDAO {
     @Query("SELECT * FROM Receta WHERE titulo LIKE '%' || :titulo || '%' LIMIT :limit OFFSET :offset")
     fun buscarRecetasPaginadasPorNombre(titulo: String, limit: Int, offset: Int): Flow<List<Receta>>
 
-    @Query("SELECT * FROM Receta LIMIT :limit OFFSET :offset")
-    fun obtenerRecetasPaginadas(limit: Int, offset: Int): Flow<List<Receta>>
-
+    @Query("SELECT * FROM Receta ORDER BY id DESC LIMIT :limit OFFSET :offset")
+    fun obtenerRecetasPaginadasNuevas(limit: Int, offset: Int): Flow<List<Receta>>
+    @Query("SELECT * FROM Receta ORDER BY id LIMIT :limit OFFSET :offset")
+    fun obtenerRecetasPaginadasViejas(limit: Int, offset: Int): Flow<List<Receta>>
     @Query("SELECT COUNT(*) FROM Receta")
     fun obtenerNumeroTotalRecetas(): Flow<Int>
+    @Query("SELECT * FROM Receta ORDER BY titulo LIMIT :limit OFFSET :offset")
+    fun obtenerRecetasPaginadasTitulo(limit: Int, offset: Int): Flow<List<Receta>>
+
+
 }

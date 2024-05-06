@@ -41,7 +41,6 @@ class CardReceta(
         val mainBinding: ActivityMainBinding? = null,
         val verGuardadosBinding: VerGuardadosBinding? = null
     )
-    // Interfaz para escuchar cambios en las recetas
 
     fun crearCardsRecetas() {
         val binding = getAvailableBinding()

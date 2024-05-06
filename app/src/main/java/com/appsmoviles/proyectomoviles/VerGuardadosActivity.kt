@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -33,38 +36,38 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
     private var limiteRecetasPaginado: Int = 5
     private var numeroPaginado: Int = 1
     private var textoBusqueda : String = ""
+    private var opcion: String = "Nuevas"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VerGuardadosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         recetaManejador = RecetaManejador(this)
-        mostrarRecetasGuardadas()
+        cargarRecetas(opcion)
         asignarListenerABotones()
         actualizarBotonesPaginado()
         asignarListenerAEditText()
+        configurarComboBoxFiltro()
     }
     private fun asignarListenerAEditText() {
         binding.buscadorEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 textoBusqueda = s.toString()
-                cargarRecetas()
+                cargarRecetas(opcion)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // No es necesario implementar este método
             }
         })
 
-        // Resto de tu código...
     }
-    private fun cargarRecetas() {
+    private fun cargarRecetas(filtro: String) {
         val textoBusquedaTrimmed = textoBusqueda.trim()
         if (textoBusquedaTrimmed.isEmpty()) {
-            mostrarRecetasGuardadas()
+            mostrarRecetasGuardadas(filtro)
         } else {
             mostrarRecetasBusqueda(textoBusquedaTrimmed)
         }
@@ -96,7 +99,7 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
 
     private fun avanzarPagina() {
         numeroPaginado += 1
-        mostrarRecetasGuardadas()
+        cargarRecetas(opcion)
         actualizarBotonesPaginado()
     }
 
@@ -106,7 +109,7 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
             if (numeroPaginado < 1) {
                 numeroPaginado = 1
             }
-            mostrarRecetasGuardadas()
+            cargarRecetas(opcion)
             actualizarBotonesPaginado()
         }
     }
@@ -129,8 +132,8 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
             binding.layoutContenedorCards.addView(noRecetasText)
         }
     }
-    private fun mostrarRecetasGuardadas() {
-        val recetasGuardadas = recetaManejador.getRecetasGuardadasPaginado(limiteRecetasPaginado, numeroPaginado)
+    private fun mostrarRecetasGuardadas(filtro: String) {
+        val recetasGuardadas = recetaManejador.getRecetasGuardadasPaginado(limiteRecetasPaginado, numeroPaginado,filtro)
 
         val cardReceta = CardReceta(this, recetasGuardadas, listOf(CardReceta.BindingWrapper(verGuardadosBinding = binding)),this)
         cardReceta.crearCardsRecetas()
@@ -160,11 +163,36 @@ class VerGuardadosActivity : VinculadorSensorLuz(), RecetaGuardadaListener {
 
     override fun cambioGuardado() {
         binding.layoutContenedorCards.removeAllViews()
-        mostrarRecetasGuardadas()
+        cargarRecetas(opcion)
     }
 
-    private fun cargarRecetasPreferences() {
-        //CARGAR RECETAS DEL SHARED
+    private fun configurarComboBoxFiltro() {
+        val opcionesFiltro = resources.getStringArray(R.array.filtros)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesFiltro)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.filtroSpinner.adapter = adapter
+
+        binding.filtroSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val opcionSeleccionada = opcionesFiltro[position]
+                opcion = opcionSeleccionada
+                when (opcionSeleccionada) {
+                    "Nuevas" -> {
+                        cargarRecetas("Nuevas")
+                    }
+                    "Viejas" -> {
+                        cargarRecetas("Viejas")
+                    }
+                    "Titulo" -> {
+                        cargarRecetas("Titulo")
+                    }
+
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
     }
 
     private fun actualizarBotonesPaginado() {

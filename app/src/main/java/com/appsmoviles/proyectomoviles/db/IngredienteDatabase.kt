@@ -5,7 +5,3 @@ import androidx.room.RoomDatabase
 import com.appsmoviles.proyectomoviles.daos.RecetaDAO
 import com.appsmoviles.proyectomoviles.dominio.Receta
 
-//@Database(entities = [Receta::class], version = 1)
-//abstract class IngredienteDatabase: RoomDatabase(){
-  //  abstract val dao: RecetaDAO
-//}
