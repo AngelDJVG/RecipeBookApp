@@ -33,7 +33,7 @@ interface RecetaDAO {
     fun obtenerRecetasPaginadasViejas(limit: Int, offset: Int): Flow<List<Receta>>
     @Query("SELECT COUNT(*) FROM Receta")
     fun obtenerNumeroTotalRecetas(): Flow<Int>
-    @Query("SELECT * FROM Receta ORDER BY titulo LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM Receta ORDER BY LOWER(titulo) LIMIT :limit OFFSET :offset")
     fun obtenerRecetasPaginadasTitulo(limit: Int, offset: Int): Flow<List<Receta>>
 
 

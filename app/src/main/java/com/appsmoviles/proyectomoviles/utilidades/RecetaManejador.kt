@@ -4,7 +4,7 @@ import android.content.Context
 import com.appsmoviles.proyectomoviles.dominio.Receta
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
+import java.util.Locale
 
 
 class RecetaManejador(private val context: Context) {
@@ -51,10 +51,10 @@ class RecetaManejador(private val context: Context) {
         } ?: emptyList()
 
         val recetasFiltradas = when (filtro) {
-            "Titulo" -> recetasGuardadas.sortedBy { it.titulo }
-            "Viejas" -> recetasGuardadas.sortedWith(
+            "Titulo" -> recetasGuardadas.sortedBy { it.titulo.lowercase(Locale.getDefault()) }
+            "Nuevas" -> recetasGuardadas.sortedWith(
                 compareBy(
-                    { it.id }
+                    { -it.id }
                 )
             )
             else -> recetasGuardadas
